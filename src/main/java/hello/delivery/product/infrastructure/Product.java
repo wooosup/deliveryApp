@@ -1,7 +1,7 @@
-package hello.delivery.entity.product;
+package hello.delivery.product.infrastructure;
 
-import hello.delivery.entity.BaseEntity;
-import hello.delivery.entity.store.Store;
+import hello.delivery.common.infrastructure.BaseEntity;
+import hello.delivery.store.infrastructure.Store;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

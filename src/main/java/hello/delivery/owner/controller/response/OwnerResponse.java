@@ -1,6 +1,6 @@
-package hello.delivery.service.owner.response;
+package hello.delivery.owner.controller.response;
 
-import hello.delivery.entity.user.Owner;
+import hello.delivery.owner.infrastructure.Owner;
 import lombok.Builder;
 import lombok.Getter;
 

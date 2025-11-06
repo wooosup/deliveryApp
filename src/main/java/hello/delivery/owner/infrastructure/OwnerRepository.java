@@ -1,6 +1,5 @@
-package hello.delivery.repository;
+package hello.delivery.owner.infrastructure;
 
-import hello.delivery.entity.user.Owner;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OwnerRepository extends JpaRepository<Owner, Long> {

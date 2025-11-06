@@ -1,4 +1,4 @@
-package hello.delivery.entity;
+package hello.delivery.common.infrastructure;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

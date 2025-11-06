@@ -1,9 +1,9 @@
-package hello.delivery.service.owner;
+package hello.delivery.owner.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import hello.delivery.service.owner.request.OwnerCreate;
-import hello.delivery.service.owner.response.OwnerResponse;
+import hello.delivery.owner.domain.OwnerCreate;
+import hello.delivery.owner.controller.response.OwnerResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

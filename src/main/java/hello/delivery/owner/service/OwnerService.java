@@ -1,9 +1,9 @@
-package hello.delivery.service.owner;
+package hello.delivery.owner.service;
 
-import hello.delivery.entity.user.Owner;
-import hello.delivery.repository.OwnerRepository;
-import hello.delivery.service.owner.request.OwnerCreate;
-import hello.delivery.service.owner.response.OwnerResponse;
+import hello.delivery.owner.infrastructure.Owner;
+import hello.delivery.owner.infrastructure.OwnerRepository;
+import hello.delivery.owner.domain.OwnerCreate;
+import hello.delivery.owner.controller.response.OwnerResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
