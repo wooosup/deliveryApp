@@ -37,11 +37,20 @@ public class Product {
                 .build();
     }
 
-    public void changeSellingStatus(int password, ProductSellingStatus status) {
+    public Product changeSellingStatus(int password, ProductSellingStatus status) {
         if (isNotSamePassword(password)) {
             throw new IsNotSamePassword("비밀번호가 틀립니다.");
         }
-        this.productSellingStatus.changeStatus(status);
+
+        ProductSellingStatus product = this.productSellingStatus.changeStatus(status);
+        return Product.builder()
+                .id(this.id)
+                .store(this.store)
+                .name(this.name)
+                .price(this.price)
+                .productType(this.productType)
+                .productSellingStatus(product)
+                .build();
     }
 
     private boolean isNotSamePassword(int password) {
