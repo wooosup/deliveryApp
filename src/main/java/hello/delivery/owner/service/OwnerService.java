@@ -1,9 +1,8 @@
 package hello.delivery.owner.service;
 
-import hello.delivery.owner.infrastructure.Owner;
-import hello.delivery.owner.infrastructure.OwnerRepository;
+import hello.delivery.owner.domain.Owner;
 import hello.delivery.owner.domain.OwnerCreate;
-import hello.delivery.owner.controller.response.OwnerResponse;
+import hello.delivery.owner.service.port.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class OwnerService {
     private final OwnerRepository ownerRepository;
 
-    public OwnerResponse create(OwnerCreate request) {
-        Owner owner = ownerRepository.save(request.toEntity());
+    public Owner create(OwnerCreate request) {
+        Owner owner = Owner.of(request);
 
-        return OwnerResponse.of(owner);
+        return ownerRepository.save(owner);
     }
 }

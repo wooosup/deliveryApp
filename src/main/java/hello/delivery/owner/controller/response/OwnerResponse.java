@@ -1,6 +1,6 @@
 package hello.delivery.owner.controller.response;
 
-import hello.delivery.owner.infrastructure.Owner;
+import hello.delivery.owner.domain.Owner;
 import lombok.Builder;
 import lombok.Getter;
 
