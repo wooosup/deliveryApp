@@ -1,21 +1,27 @@
 package hello.delivery.owner.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.exception.OwnerNotFound;
+import hello.delivery.mock.FakeOwnerRepository;
+import hello.delivery.owner.domain.Owner;
 import hello.delivery.owner.domain.OwnerCreate;
-import hello.delivery.owner.controller.response.OwnerResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class OwnerServiceTest {
 
-    @Autowired
     private OwnerService ownerService;
 
+    @BeforeEach
+    void setUp() {
+        FakeOwnerRepository fakeOwnerRepository = new FakeOwnerRepository();
+        this.ownerService = new OwnerService(fakeOwnerRepository);
+    }
+
     @Test
-    void create() throws Exception {
+    void signup() throws Exception {
         // given
         OwnerCreate owner = OwnerCreate.builder()
                 .name("우섭이")
@@ -23,11 +29,37 @@ class OwnerServiceTest {
                 .build();
 
         // when
-        OwnerResponse response = ownerService.create(owner);
+        Owner result = ownerService.signup(owner);
 
         // then
-        assertThat(response.getName()).isEqualTo("우섭이");
-        assertThat(response.getPassword()).isEqualTo(3454);
+        assertThat(result.getName()).isEqualTo("우섭이");
+        assertThat(result.getPassword()).isEqualTo(3454);
     }
+
+    @Test
+    void findByPassword() throws Exception {
+        // given
+        OwnerCreate owner = OwnerCreate.builder()
+                .name("우섭이")
+                .password(3454)
+                .build();
+
+        ownerService.signup(owner);
+
+        // when
+        String password = ownerService.findByPassword(owner.getName());
+
+        // then
+        assertThat(password).isEqualTo("3454");
+    }
+
+    @Test
+    void notFoundPassword() throws Exception {
+        // expect
+        assertThatThrownBy(() -> ownerService.findByPassword("없음"))
+                .isInstanceOf(OwnerNotFound.class)
+                .hasMessageContaining("사용자를 찾을 수 없습니다.");
+    }
+
 
 }
