@@ -22,4 +22,9 @@ public class OwnerRepositoryImpl implements OwnerRepository {
         return ownerJpaRepository.findById(id).map(OwnerEntity::toDomain);
 
     }
+
+    @Override
+    public Optional<String> findByPassword(String name) {
+        return ownerJpaRepository.findByPassword(name);
+    }
 }

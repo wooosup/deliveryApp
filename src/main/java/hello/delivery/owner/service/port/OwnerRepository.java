@@ -8,4 +8,7 @@ public interface OwnerRepository {
     Owner save(Owner owner);
 
     Optional<Owner> findById(Long id);
+
+    Optional<String> findByPassword(String name);
+
 }
