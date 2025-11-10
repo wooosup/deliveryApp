@@ -2,11 +2,13 @@ package hello.delivery.owner.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class OwnerTest {
 
     @Test
+    @DisplayName("OwnerCreate로 Owner를 생성한다.")
     void create() throws Exception {
         // given
         OwnerCreate ownerCreate = OwnerCreate.builder()

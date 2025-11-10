@@ -8,6 +8,7 @@ import hello.delivery.mock.FakeOwnerRepository;
 import hello.delivery.owner.domain.Owner;
 import hello.delivery.owner.domain.OwnerCreate;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class OwnerServiceTest {
@@ -21,6 +22,7 @@ class OwnerServiceTest {
     }
 
     @Test
+    @DisplayName("OwnerCreate로 회원가입을 한다.")
     void signup() throws Exception {
         // given
         OwnerCreate owner = OwnerCreate.builder()
@@ -37,6 +39,7 @@ class OwnerServiceTest {
     }
 
     @Test
+    @DisplayName("이름으로 비밀번호를 찾는다.")
     void findByPassword() throws Exception {
         // given
         OwnerCreate owner = OwnerCreate.builder()
@@ -54,6 +57,7 @@ class OwnerServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 이름으로 비밀번호를 찾으면 예외가 발생한다.")
     void notFoundPassword() throws Exception {
         // expect
         assertThatThrownBy(() -> ownerService.findByPassword("없음"))
