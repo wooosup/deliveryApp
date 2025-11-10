@@ -1,10 +1,10 @@
 package hello.delivery.common.exception;
 
-public class OwnerNotFound extends DeliveryException{
+public class UserNotFound extends DeliveryException{
 
     private static final String MESSAGE = "사용자를 찾을 수 없습니다.";
 
-    public OwnerNotFound() {
+    public UserNotFound() {
         super(MESSAGE);
     }
 

@@ -1,6 +1,6 @@
 package hello.delivery.owner.service;
 
-import hello.delivery.common.exception.OwnerNotFound;
+import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.owner.domain.Owner;
 import hello.delivery.owner.domain.OwnerCreate;
 import hello.delivery.owner.service.port.OwnerRepository;
@@ -22,6 +22,6 @@ public class OwnerService {
 
     public String findByPassword(String name) {
         return ownerRepository.findByPassword(name)
-                .orElseThrow(OwnerNotFound::new);
+                .orElseThrow(UserNotFound::new);
     }
 }

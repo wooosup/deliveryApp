@@ -3,7 +3,7 @@ package hello.delivery.owner.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import hello.delivery.common.exception.OwnerNotFound;
+import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.mock.FakeOwnerRepository;
 import hello.delivery.owner.domain.Owner;
 import hello.delivery.owner.domain.OwnerCreate;
@@ -57,7 +57,7 @@ class OwnerServiceTest {
     void notFoundPassword() throws Exception {
         // expect
         assertThatThrownBy(() -> ownerService.findByPassword("없음"))
-                .isInstanceOf(OwnerNotFound.class)
+                .isInstanceOf(UserNotFound.class)
                 .hasMessageContaining("사용자를 찾을 수 없습니다.");
     }
 
