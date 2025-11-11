@@ -1,8 +1,8 @@
 package hello.delivery.common.exception;
 
-public class DuplicateProduct extends DeliveryException{
+public class DuplicateProductException extends DeliveryException{
 
-    public DuplicateProduct(String message) {
+    public DuplicateProductException(String message) {
         super(message);
     }
 
