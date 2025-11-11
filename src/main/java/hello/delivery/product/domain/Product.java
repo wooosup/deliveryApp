@@ -1,6 +1,6 @@
 package hello.delivery.product.domain;
 
-import hello.delivery.common.exception.IsNotSamePassword;
+import hello.delivery.common.exception.InvalidPasswordException;
 import hello.delivery.product.infrastructure.ProductSellingStatus;
 import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.store.domain.Store;
@@ -39,7 +39,7 @@ public class Product {
 
     public Product changeSellingStatus(int password, ProductSellingStatus status) {
         if (isNotSamePassword(password)) {
-            throw new IsNotSamePassword("비밀번호가 틀립니다.");
+            throw new InvalidPasswordException();
         }
 
         ProductSellingStatus product = this.productSellingStatus.changeStatus(status);

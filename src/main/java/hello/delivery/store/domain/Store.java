@@ -2,7 +2,7 @@ package hello.delivery.store.domain;
 
 import static java.util.Objects.requireNonNullElseGet;
 
-import hello.delivery.common.exception.DuplicateProduct;
+import hello.delivery.common.exception.DuplicateProductException;
 import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.infrastructure.StoreType;
@@ -77,7 +77,7 @@ public class Store {
 
     public void addProduct(Product product) {
         if (contains(product)) {
-            throw new DuplicateProduct("이미 존재하는 상품입니다.");
+            throw new DuplicateProductException("이미 존재하는 상품입니다.");
         }
         this.products.add(product);
     }

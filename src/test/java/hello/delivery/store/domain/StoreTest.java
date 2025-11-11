@@ -5,7 +5,7 @@ import static hello.delivery.store.infrastructure.StoreType.KOREAN_FOOD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import hello.delivery.common.exception.DuplicateProduct;
+import hello.delivery.common.exception.DuplicateProductException;
 import hello.delivery.mock.TestClockHolder;
 import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.domain.Product;
@@ -135,7 +135,7 @@ class StoreTest {
 
         // expect
         assertThatThrownBy(() -> store.addProduct(product))
-                .isInstanceOf(DuplicateProduct.class)
+                .isInstanceOf(DuplicateProductException.class)
                 .hasMessageContaining("이미 존재하는 상품입니다.");
 
     }

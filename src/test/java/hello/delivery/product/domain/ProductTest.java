@@ -6,7 +6,7 @@ import static hello.delivery.product.infrastructure.ProductType.FOOD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import hello.delivery.common.exception.IsNotSamePassword;
+import hello.delivery.common.exception.InvalidPasswordException;
 import hello.delivery.owner.domain.Owner;
 import hello.delivery.store.domain.Store;
 import org.junit.jupiter.api.DisplayName;
@@ -74,8 +74,8 @@ class ProductTest {
 
         // expect
         assertThatThrownBy(() -> product.changeSellingStatus(1111, STOP_SELLING))
-                .isInstanceOf(IsNotSamePassword.class)
-                .hasMessageContaining("비밀번호가 틀립니다.");
+                .isInstanceOf(InvalidPasswordException.class)
+                .hasMessageContaining("비밀번호가 일치하지 않습니다.");
     }
 
     private static Owner buildOwner() {

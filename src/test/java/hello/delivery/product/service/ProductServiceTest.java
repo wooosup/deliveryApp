@@ -6,7 +6,7 @@ import static hello.delivery.product.infrastructure.ProductType.DESSERT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import hello.delivery.common.exception.IsNotSamePassword;
+import hello.delivery.common.exception.InvalidPasswordException;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.mock.FakeProductRepository;
 import hello.delivery.owner.domain.Owner;
@@ -232,12 +232,11 @@ class ProductServiceTest {
 
             // expect
             assertThatThrownBy(() -> productService.changeSellingStatus(product.getId(), 1111, STOP_SELLING))
-                    .isInstanceOf(IsNotSamePassword.class)
-                    .hasMessage("비밀번호가 틀립니다.");
+                    .isInstanceOf(InvalidPasswordException.class)
+                    .hasMessage("비밀번호가 일치하지 않습니다.");
         }
 
     }
-
 
     private static Owner buildOwner() {
         return Owner.builder()
