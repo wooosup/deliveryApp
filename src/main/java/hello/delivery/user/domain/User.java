@@ -38,6 +38,6 @@ public class User {
     }
 
     private boolean isNotSameUsernameAndPassword(String username, String password) {
-        return !this.username.equals(username) && !this.password.equals(password);
+        return !this.username.equals(username) || !this.password.equals(password);
     }
 }
