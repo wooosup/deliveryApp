@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.exception.InvalidPasswordException;
+import hello.delivery.common.exception.ProductException;
 import hello.delivery.owner.domain.Owner;
 import hello.delivery.store.domain.Store;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +36,42 @@ class ProductTest {
         assertThat(product.getPrice()).isEqualTo(20000);
         assertThat(product.getProductType()).isEqualTo(FOOD);
         assertThat(product.getProductSellingStatus()).isEqualTo(SELLING);
+    }
+
+    @Test
+    @DisplayName("가게가 비어있으면 예외를 던진다.")
+    void invalidStoreIsEmpty() throws Exception {
+        // given
+        ProductCreate productCreate = ProductCreate.builder()
+                .storeId(1L)
+                .name("치킨")
+                .price(20000)
+                .type(FOOD)
+                .build();
+
+        // expect
+        assertThatThrownBy(() -> Product.of(productCreate, null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("가게는 필수입니다.");
+    }
+
+    @Test
+    @DisplayName("가게 주인이 일치하지 않으면 예외를 던진다.")
+    void invalidStoreOwner() throws Exception {
+        // given
+        Owner owner = buildOwner();
+        Store store = buildStore(owner);
+        ProductCreate productCreate = ProductCreate.builder()
+                .storeId(2L)
+                .name("치킨")
+                .price(20000)
+                .type(FOOD)
+                .build();
+
+        // expect
+        assertThatThrownBy(() -> Product.of(productCreate, store))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("가게 주인이 일치하지 않습니다.");
     }
 
     @Test
