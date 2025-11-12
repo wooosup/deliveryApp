@@ -10,6 +10,6 @@ public class LoginException extends DeliveryException{
 
     @Override
     public int getStatusCode() {
-        return 0;
+        return 404;
     }
 }
