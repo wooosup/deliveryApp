@@ -1,5 +1,6 @@
 package hello.delivery.owner.domain;
 
+import hello.delivery.owner.dto.OwnerCreate;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,6 +22,14 @@ public class Owner {
         return Owner.builder()
                 .name(ownerCreate.getName())
                 .password(ownerCreate.getPassword())
+                .build();
+    }
+
+    public Owner changePassword(String newPassword) {
+        return Owner.builder()
+                .id(id)
+                .name(name)
+                .password(newPassword)
                 .build();
     }
 }
