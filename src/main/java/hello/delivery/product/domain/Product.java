@@ -47,7 +47,7 @@ public class Product {
         }
     }
 
-    public Product changeSellingStatus(int password, ProductSellingStatus status) {
+    public Product changeSellingStatus(String password, ProductSellingStatus status) {
         if (isNotSamePassword(password)) {
             throw new InvalidPasswordException();
         }
@@ -63,7 +63,7 @@ public class Product {
                 .build();
     }
 
-    private boolean isNotSamePassword(int password) {
-        return this.store.getOwner().getPassword() != password;
+    private boolean isNotSamePassword(String password) {
+        return !this.store.getOwner().getPassword().equals(password);
     }
 }

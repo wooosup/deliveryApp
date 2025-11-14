@@ -52,7 +52,7 @@ class StoreRepositoryTest {
         return Owner.builder()
                 .id(1L)
                 .name("우섭이")
-                .password(3454)
+                .password("3454")
                 .build();
     }
 

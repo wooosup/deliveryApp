@@ -21,7 +21,7 @@ public class OwnerEntity extends BaseEntity {
 
     private String name;
 
-    private int password;
+    private String password;
 
     public static OwnerEntity of(Owner owner) {
         OwnerEntity ownerEntity = new OwnerEntity();

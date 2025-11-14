@@ -61,7 +61,7 @@ class StoreServiceTest {
         return Owner.builder()
                 .id(1L)
                 .name("우섭이")
-                .password(3454)
+                .password("3454")
                 .build();
     }
 
@@ -108,6 +108,7 @@ class StoreServiceTest {
         fakeFinder.addStore(store);
 
         ProductCreate product = ProductCreate.builder()
+                .storeId(store.getId())
                 .name("치킨")
                 .type(FOOD)
                 .price(20000)

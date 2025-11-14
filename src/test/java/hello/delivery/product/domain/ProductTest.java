@@ -89,7 +89,7 @@ class ProductTest {
         Product product = Product.of(productCreate, store);
 
         // when
-        Product result = product.changeSellingStatus(3454, STOP_SELLING);
+        Product result = product.changeSellingStatus("3454", STOP_SELLING);
 
         // then
         assertThat(result.getProductSellingStatus()).isEqualTo(STOP_SELLING);
@@ -110,7 +110,7 @@ class ProductTest {
         Product product = Product.of(productCreate, store);
 
         // expect
-        assertThatThrownBy(() -> product.changeSellingStatus(1111, STOP_SELLING))
+        assertThatThrownBy(() -> product.changeSellingStatus("1111", STOP_SELLING))
                 .isInstanceOf(InvalidPasswordException.class)
                 .hasMessageContaining("비밀번호가 일치하지 않습니다.");
     }
@@ -119,7 +119,7 @@ class ProductTest {
         return Owner.builder()
                 .id(1L)
                 .name("우섭이")
-                .password(3454)
+                .password("3454")
                 .build();
     }
 

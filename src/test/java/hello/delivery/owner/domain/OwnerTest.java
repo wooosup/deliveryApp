@@ -13,7 +13,7 @@ class OwnerTest {
         // given
         OwnerCreate ownerCreate = OwnerCreate.builder()
                 .name("우섭이")
-                .password(3454)
+                .password("3454")
                 .build();
 
         // when

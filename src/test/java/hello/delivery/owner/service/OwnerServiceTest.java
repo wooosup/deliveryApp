@@ -27,7 +27,7 @@ class OwnerServiceTest {
         // given
         OwnerCreate owner = OwnerCreate.builder()
                 .name("우섭이")
-                .password(3454)
+                .password("3454")
                 .build();
 
         // when
@@ -35,7 +35,7 @@ class OwnerServiceTest {
 
         // then
         assertThat(result.getName()).isEqualTo("우섭이");
-        assertThat(result.getPassword()).isEqualTo(3454);
+        assertThat(result.getPassword()).isEqualTo("3454");
     }
 
     @Test
@@ -44,7 +44,7 @@ class OwnerServiceTest {
         // given
         OwnerCreate owner = OwnerCreate.builder()
                 .name("우섭이")
-                .password(3454)
+                .password("3454")
                 .build();
 
         ownerService.signup(owner);

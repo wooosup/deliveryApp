@@ -8,10 +8,10 @@ public class Owner {
 
     private final Long id;
     private final String name;
-    private final int password;
+    private final String password;
 
     @Builder
-    private Owner(Long id, String name, int password) {
+    private Owner(Long id, String name, String password) {
         this.id = id;
         this.name = name;
         this.password = password;

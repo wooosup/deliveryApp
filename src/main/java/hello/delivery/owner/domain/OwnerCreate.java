@@ -7,10 +7,10 @@ import lombok.Getter;
 public class OwnerCreate {
 
     private final String name;
-    private final int password;
+    private final String password;
 
     @Builder
-    private OwnerCreate(String name, int password) {
+    private OwnerCreate(String name, String password) {
         this.name = name;
         this.password = password;
     }

@@ -36,7 +36,7 @@ public class ProductService {
     }
 
     @Transactional
-    public Product changeSellingStatus(Long productId, int ownerPassword, ProductSellingStatus status) {
+    public Product changeSellingStatus(Long productId, String ownerPassword, ProductSellingStatus status) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(ProductNotFound::new);
 

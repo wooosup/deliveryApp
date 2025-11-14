@@ -8,10 +8,10 @@ import lombok.Getter;
 public class OwnerResponse {
     private final Long id;
     private final String name;
-    private final int password;
+    private final String password;
 
     @Builder
-    private OwnerResponse(Long id, String name, int password) {
+    private OwnerResponse(Long id, String name, String password) {
         this.id = id;
         this.name = name;
         this.password = password;

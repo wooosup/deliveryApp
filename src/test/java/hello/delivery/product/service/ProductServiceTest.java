@@ -107,7 +107,7 @@ class ProductServiceTest {
             Product product = productService.create(store, productCreate);
 
             // when
-            Product result = productService.changeSellingStatus(product.getId(), 3454, STOP_SELLING);
+            Product result = productService.changeSellingStatus(product.getId(), "3454", STOP_SELLING);
 
             // then
             assertThat(result.getProductSellingStatus()).isEqualTo(STOP_SELLING);
@@ -189,7 +189,7 @@ class ProductServiceTest {
                     .price(5500)
                     .build();
             List<Product> products = productService.creates(store, List.of(product1, product2));
-            productService.changeSellingStatus(products.get(0).getId(), 3454, STOP_SELLING);
+            productService.changeSellingStatus(products.get(0).getId(), "3454", STOP_SELLING);
 
             // when
             List<Product> result = productService.findBySelling();
@@ -211,7 +211,7 @@ class ProductServiceTest {
             long productId = 999L;
 
             // expect
-            assertThatThrownBy(() -> productService.changeSellingStatus(productId, 3454, STOP_SELLING))
+            assertThatThrownBy(() -> productService.changeSellingStatus(productId, "3454", STOP_SELLING))
                     .isInstanceOf(ProductNotFound.class)
                     .hasMessage("상품을 찾을 수 없습니다.");
         }
@@ -231,7 +231,7 @@ class ProductServiceTest {
             Product product = productService.create(store, productCreate);
 
             // expect
-            assertThatThrownBy(() -> productService.changeSellingStatus(product.getId(), 1111, STOP_SELLING))
+            assertThatThrownBy(() -> productService.changeSellingStatus(product.getId(), "1111", STOP_SELLING))
                     .isInstanceOf(InvalidPasswordException.class)
                     .hasMessage("비밀번호가 일치하지 않습니다.");
         }
@@ -242,7 +242,7 @@ class ProductServiceTest {
         return Owner.builder()
                 .id(1L)
                 .name("우섭이")
-                .password(3454)
+                .password("3454")
                 .build();
     }
 
