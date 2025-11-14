@@ -22,7 +22,7 @@ class OwnerServiceTest {
     }
 
     @Test
-    @DisplayName("OwnerCreate로 회원가입을 한다.")
+    @DisplayName("회원가입을 할 수 있다.")
     void signup() throws Exception {
         // given
         OwnerCreate owner = OwnerCreate.builder()
@@ -39,31 +39,29 @@ class OwnerServiceTest {
     }
 
     @Test
-    @DisplayName("이름으로 비밀번호를 찾는다.")
-    void findByPassword() throws Exception {
+    @DisplayName("비밀번호를 변경할 수 있다.")
+    void changePassword() throws Exception {
         // given
-        OwnerCreate owner = OwnerCreate.builder()
+        OwnerCreate ownerCreate = OwnerCreate.builder()
                 .name("우섭이")
                 .password("3454")
                 .build();
-
-        ownerService.signup(owner);
+        Owner owner = ownerService.signup(ownerCreate);
 
         // when
-        String password = ownerService.findByPassword(owner.getName());
+        Owner result = ownerService.changePassword(owner.getId(), "9999");
 
         // then
-        assertThat(password).isEqualTo("3454");
+        assertThat(result.getPassword()).isEqualTo("9999");
     }
 
     @Test
-    @DisplayName("존재하지 않는 이름으로 비밀번호를 찾으면 예외가 발생한다.")
-    void notFoundPassword() throws Exception {
+    @DisplayName("비밀변호 변경 시 사용자를 찾지 못하면 예외가 발생한다.")
+    void validateChangePassword() throws Exception {
         // expect
-        assertThatThrownBy(() -> ownerService.findByPassword("없음"))
+        assertThatThrownBy(() -> ownerService.changePassword(1L, "9999"))
                 .isInstanceOf(UserNotFound.class)
                 .hasMessageContaining("사용자를 찾을 수 없습니다.");
     }
-
 
 }
