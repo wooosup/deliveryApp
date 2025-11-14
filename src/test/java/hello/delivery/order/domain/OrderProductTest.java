@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class OrderProductTest {
 
     @Test
-    @DisplayName("Product와 수량으로 OrderProduct를 생성할 수 있다.")
+    @DisplayName("주문 상품을 생성할 수 있다.")
     void create() throws Exception {
         // given
         Product product = Product.builder()

@@ -36,7 +36,7 @@ class StoreServiceTest {
     }
 
     @Test
-    @DisplayName("owner와 StoreCreate로 Store를 생성한다.")
+    @DisplayName("가게를 생성할 수 있다.")
     void create() throws Exception {
         // given
         Owner owner = buildOwner();

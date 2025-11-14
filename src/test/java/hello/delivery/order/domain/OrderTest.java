@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 class OrderTest {
 
     @Test
-    @DisplayName("user, store, orderProducts로 주문을 생성할 수 있다.")
+    @DisplayName("주문을 생성할 수 있다.")
     void order() throws Exception {
         // given
         Owner owner = buildOwner();
@@ -35,7 +35,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("user가 null이면 예외를 던진다.")
+    @DisplayName("사용자가 null이면 예외를 던진다.")
     void validateOrderNotUser() throws Exception {
         // given
         Owner owner = buildOwner();
@@ -49,7 +49,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("store가 null이면 예외를 던진다.")
+    @DisplayName("가게가 null이면 예외를 던진다.")
     void validateOrderNotStore() throws Exception {
         // given
         Owner owner = buildOwner();
@@ -65,7 +65,7 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("orderProducts가 null이면 예외를 던진다.")
+    @DisplayName("삼품들이 null이면 예외를 던진다.")
     void validateOrderNotOrderProducts() throws Exception {
         // given
         Owner owner = buildOwner();

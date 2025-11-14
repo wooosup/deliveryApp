@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 class ProductTest {
 
     @Test
-    @DisplayName("ProductCreate로 Product를 생성한다.")
+    @DisplayName("상품을 생성할 수 있다.")
     void create() throws Exception {
         // given
         Owner owner = buildOwner();
@@ -75,7 +75,7 @@ class ProductTest {
     }
 
     @Test
-    @DisplayName("owner의 비밀번호를 받아 판매 상태를 변경한다.")
+    @DisplayName("비밀번호를 받아 판매 상태를 변경한다.")
     void changeSellingStatus() throws Exception {
         // given
         Owner owner = buildOwner();
