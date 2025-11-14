@@ -42,6 +42,11 @@ public class FakeProductRepository implements ProductRepository {
     }
 
     @Override
+    public void deleteById(Long productId) {
+        data.removeIf(product -> product.getId().equals(productId));
+    }
+
+    @Override
     public List<Product> saveAll(List<Product> products) {
         return products.stream()
                 .map(this::save)

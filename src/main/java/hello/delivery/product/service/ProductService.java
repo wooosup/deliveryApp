@@ -56,6 +56,10 @@ public class ProductService {
         return productRepository.findByProductSellingStatusIs(SELLING);
     }
 
+    public void deleteById(Long productId) {
+        productRepository.deleteById(productId);
+    }
+
     private static List<Product> getProductList(Store store, List<ProductCreate> request) {
         return request.stream()
                 .map(r -> Product.of(r, store))

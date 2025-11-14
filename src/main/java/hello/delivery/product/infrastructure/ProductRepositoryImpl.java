@@ -1,5 +1,6 @@
 package hello.delivery.product.infrastructure;
 
+import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.service.port.ProductRepository;
 import java.util.List;
@@ -20,6 +21,14 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Product save(Product product) {
         return productJpaRepository.save(ProductEntity.of(product)).toDomain();
+    }
+
+    @Override
+    public void deleteById(Long productId) {
+        ProductEntity entity = productJpaRepository.findById(productId)
+                .orElseThrow(ProductNotFound::new);
+        productJpaRepository.delete(entity);
+        entity.toDomain();
     }
 
     @Override
