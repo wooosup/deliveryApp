@@ -31,6 +31,26 @@ public class User {
                 .build();
     }
 
+    public User changeAddress(String newAddress) {
+        return User.builder()
+                .id(id)
+                .name(name)
+                .username(username)
+                .password(password)
+                .address(newAddress)
+                .build();
+    }
+
+    public User changePassword(String newPassword) {
+        return User.builder()
+                .id(id)
+                .name(name)
+                .username(username)
+                .password(newPassword)
+                .address(address)
+                .build();
+    }
+
     public void checkNicknameAndPassword(String username,String password) {
         if (isNotSameUsernameAndPassword(username, password)) {
             throw new LoginException();
