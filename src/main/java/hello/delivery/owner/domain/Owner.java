@@ -1,6 +1,5 @@
 package hello.delivery.owner.domain;
 
-import hello.delivery.owner.dto.OwnerCreate;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -16,12 +16,15 @@ public class OwnerService {
 
     public Owner signup(OwnerCreate request) {
         Owner owner = Owner.of(request);
-
         return ownerRepository.save(owner);
     }
 
-    public String findByPassword(String name) {
-        return ownerRepository.findByPassword(name)
+    public Owner changePassword(Long ownerId, String newPassword) {
+        Owner owner = ownerRepository.findById(ownerId)
                 .orElseThrow(UserNotFound::new);
+        Owner changedOwner = owner.changePassword(newPassword);
+
+        return ownerRepository.save(changedOwner);
     }
+
 }
