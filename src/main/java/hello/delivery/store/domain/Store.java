@@ -9,6 +9,7 @@ import hello.delivery.store.infrastructure.StoreType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -41,6 +42,7 @@ public class Store {
     }
 
     public static Store of(StoreCreate storeCreate, Owner owner, LocalDate currentDate) {
+        Objects.requireNonNull(owner, "가게 주인은 필수입니다.");
         return Store.builder()
                 .owner(owner)
                 .name(storeCreate.getStoreName())
