@@ -23,8 +23,4 @@ public class OwnerRepositoryImpl implements OwnerRepository {
 
     }
 
-    @Override
-    public Optional<String> findByPassword(String name) {
-        return ownerJpaRepository.findByPassword(name);
-    }
 }

@@ -9,6 +9,4 @@ public interface OwnerRepository {
 
     Optional<Owner> findById(Long id);
 
-    Optional<String> findByPassword(String name);
-
 }

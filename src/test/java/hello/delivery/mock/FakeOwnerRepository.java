@@ -36,11 +36,4 @@ public class FakeOwnerRepository implements OwnerRepository {
                 .findAny();
     }
 
-    @Override
-    public Optional<String> findByPassword(String name) {
-        return data.stream()
-                .filter(owner -> owner.getName().equals(name))
-                .map(owner -> String.valueOf(owner.getPassword()))
-                .findAny();
-    }
 }
