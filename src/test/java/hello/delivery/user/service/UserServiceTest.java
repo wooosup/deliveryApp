@@ -3,7 +3,7 @@ package hello.delivery.user.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import hello.delivery.common.exception.LoginException;
+import hello.delivery.common.exception.UserException;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.mock.FakeUserRepository;
 import hello.delivery.user.domain.User;
@@ -30,7 +30,7 @@ class UserServiceTest {
         UserCreate userCreate = UserCreate.builder()
                 .name("김우섭")
                 .username("wss3325")
-                .password("1234")
+                .password("hihihi3454")
                 .address("대구")
                 .build();
 
@@ -50,13 +50,13 @@ class UserServiceTest {
         UserCreate userCreate = UserCreate.builder()
                 .name("김우섭")
                 .username("wss3325")
-                .password("1234")
+                .password("hihihi3454")
                 .address("대구")
                 .build();
         userService.signup(userCreate);
         Login user = Login.builder()
                 .username("wss3325")
-                .password("1234")
+                .password("hihihi3454")
                 .build();
 
         // when
@@ -73,13 +73,13 @@ class UserServiceTest {
         UserCreate userCreate = UserCreate.builder()
                 .name("김우섭")
                 .username("wss3325")
-                .password("1234")
+                .password("hihihi3454")
                 .address("대구")
                 .build();
         userService.signup(userCreate);
         Login user = Login.builder()
-                .username("zzzz")
-                .password("11111")
+                .username("zzzzzzz")
+                .password("hihihi1111")
                 .build();
 
         // expect
@@ -95,18 +95,18 @@ class UserServiceTest {
         UserCreate userCreate = UserCreate.builder()
                 .name("김우섭")
                 .username("wss3325")
-                .password("1234")
+                .password("hihihi3454")
                 .address("대구")
                 .build();
         userService.signup(userCreate);
         Login user = Login.builder()
                 .username("wss3325")
-                .password("11111")
+                .password("hihihi1111")
                 .build();
 
         // expect
         assertThatThrownBy(() -> userService.login(user))
-                .isInstanceOf(LoginException.class)
+                .isInstanceOf(UserException.class)
                 .hasMessageContaining("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
 
@@ -118,7 +118,7 @@ class UserServiceTest {
         UserCreate userCreate = UserCreate.builder()
                 .name("김우섭")
                 .username("wss3325")
-                .password("1234")
+                .password("hihihi3454")
                 .address("대구")
                 .build();
         User user = userService.signup(userCreate);
@@ -139,21 +139,39 @@ class UserServiceTest {
         UserCreate userCreate = UserCreate.builder()
                 .name("김우섭")
                 .username("wss3325")
-                .password("1234")
+                .password("hihihi3454")
                 .address("대구")
                 .build();
         User user = userService.signup(userCreate);
 
         // when
-        userService.changePassword(user.getId(), "9999");
+        userService.changePassword(user.getId(), "hihihi9999");
         Login result = Login.builder()
                 .username("wss3325")
-                .password("9999")
+                .password("hihihi9999")
                 .build();
 
         // then
         assertThat(result.getUsername()).isEqualTo("wss3325");
-        assertThat(result.getPassword()).isEqualTo("9999");
+        assertThat(result.getPassword()).isEqualTo("hihihi9999");
+    }
+
+    @Test
+    @DisplayName("비밀변호 변경 시 8자 미만 또는 20자 초과이면 예외가 발생한다.")
+    void validateChangePassword() throws Exception {
+        // given
+        UserCreate userCreate = UserCreate.builder()
+                .name("김우섭")
+                .username("wss3325")
+                .password("hihihi3454")
+                .address("대구")
+                .build();
+        User user = userService.signup(userCreate);
+
+        // expect
+        assertThatThrownBy(() -> userService.changePassword(user.getId(), "1234567"))
+                .isInstanceOf(UserException.class)
+                .hasMessageContaining("비밀번호는 8자 이상 20자 이하로 입력 가능합니다.");
     }
 
 }

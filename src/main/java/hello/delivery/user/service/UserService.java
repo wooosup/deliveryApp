@@ -24,8 +24,8 @@ public class UserService {
     public User login(Login login) {
         User user = userRepository.findByUsername(login.getUsername())
                 .orElseThrow(UserNotFound::new);
-        user.checkNicknameAndPassword(login.getUsername(), login.getPassword());
 
+        user.checkPassword(login.getPassword());
         return user;
     }
 
