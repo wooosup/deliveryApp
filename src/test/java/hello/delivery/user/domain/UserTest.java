@@ -3,7 +3,7 @@ package hello.delivery.user.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import hello.delivery.common.exception.LoginException;
+import hello.delivery.common.exception.UserException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ class UserTest {
         UserCreate userCreate = UserCreate.builder()
                 .name("김우섭")
                 .username("wss3325")
-                .password("1234")
+                .password("hihihi3454")
                 .address("대구")
                 .build();
 
@@ -26,25 +26,25 @@ class UserTest {
         // then
         assertThat(signupUser.getName()).isEqualTo("김우섭");
         assertThat(signupUser.getUsername()).isEqualTo("wss3325");
-        assertThat(signupUser.getPassword()).isEqualTo("1234");
+        assertThat(signupUser.getPassword()).isEqualTo("hihihi3454");
         assertThat(signupUser.getAddress()).isEqualTo("대구");
     }
 
     @Test
-    @DisplayName("아이디 또는 비밀번호가 일치하지 않으면 예외를 던진다.")
-    void checkNicknameAndPassword() throws Exception {
+    @DisplayName("비밀번호가 일치하지 않으면 예외를 던진다.")
+    void checkPassword() throws Exception {
         // given
         UserCreate userCreate = UserCreate.builder()
                 .name("김우섭")
                 .username("wss3325")
-                .password("1234")
+                .password("hihihi3454")
                 .address("대구")
                 .build();
         User signupUser = User.signup(userCreate);
 
         // expect
-        assertThatThrownBy(() -> signupUser.checkNicknameAndPassword("zzz", "1111"))
-                .isInstanceOf(LoginException.class)
+        assertThatThrownBy(() -> signupUser.checkPassword("1111"))
+                .isInstanceOf(UserException.class)
                 .hasMessageContaining("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
 
