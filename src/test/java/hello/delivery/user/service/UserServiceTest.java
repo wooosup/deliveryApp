@@ -157,8 +157,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("비밀변호 변경 시 8자 미만 또는 20자 초과이면 예외가 발생한다.")
-    void validateChangePassword() throws Exception {
+    @DisplayName("비밀변호는 8자 이상 20자 이하로 입력해야 한다.")
+    void validateLengthChangePassword() throws Exception {
         // given
         UserCreate userCreate = UserCreate.builder()
                 .name("김우섭")
@@ -172,6 +172,24 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.changePassword(user.getId(), "1234567"))
                 .isInstanceOf(UserException.class)
                 .hasMessageContaining("비밀번호는 8자 이상 20자 이하로 입력 가능합니다.");
+    }
+
+    @Test
+    @DisplayName("비밀변호 변경 시 기존 비밀번호와 같으면 예외가 발생한다.")
+    void validateSamePassword() throws Exception {
+        // given
+        UserCreate userCreate = UserCreate.builder()
+                .name("김우섭")
+                .username("wss3325")
+                .password("hihihi3454")
+                .address("대구")
+                .build();
+        User user = userService.signup(userCreate);
+
+        // expect
+        assertThatThrownBy(() -> userService.changePassword(user.getId(), "hihihi3454"))
+                .isInstanceOf(UserException.class)
+                .hasMessageContaining("기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
     }
 
 }

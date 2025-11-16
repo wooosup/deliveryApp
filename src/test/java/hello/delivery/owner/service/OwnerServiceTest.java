@@ -3,6 +3,7 @@ package hello.delivery.owner.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.exception.OwnerException;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.mock.FakeOwnerRepository;
 import hello.delivery.owner.domain.Owner;
@@ -27,7 +28,7 @@ class OwnerServiceTest {
         // given
         OwnerCreate owner = OwnerCreate.builder()
                 .name("우섭이")
-                .password("3454")
+                .password("hihihi3454")
                 .build();
 
         // when
@@ -35,7 +36,7 @@ class OwnerServiceTest {
 
         // then
         assertThat(result.getName()).isEqualTo("우섭이");
-        assertThat(result.getPassword()).isEqualTo("3454");
+        assertThat(result.getPassword()).isEqualTo("hihihi3454");
     }
 
     @Test
@@ -44,24 +45,41 @@ class OwnerServiceTest {
         // given
         OwnerCreate ownerCreate = OwnerCreate.builder()
                 .name("우섭이")
-                .password("3454")
+                .password("hihihi3454")
                 .build();
         Owner owner = ownerService.signup(ownerCreate);
 
         // when
-        Owner result = ownerService.changePassword(owner.getId(), "9999");
+        Owner result = ownerService.changePassword(owner.getId(), "hihihi9999");
 
         // then
-        assertThat(result.getPassword()).isEqualTo("9999");
+        assertThat(result.getPassword()).isEqualTo("hihihi9999");
     }
 
     @Test
     @DisplayName("비밀변호 변경 시 사용자를 찾지 못하면 예외가 발생한다.")
-    void validateChangePassword() throws Exception {
+    void notFoundOwner() throws Exception {
         // expect
-        assertThatThrownBy(() -> ownerService.changePassword(1L, "9999"))
+        assertThatThrownBy(() -> ownerService.changePassword(1L, "hihihi9999"))
                 .isInstanceOf(UserNotFound.class)
                 .hasMessageContaining("사용자를 찾을 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("비밀변호 변경 시 기존 비밀번호와 같으면 예외가 발생한다.")
+    void validateSamePassword() throws Exception {
+        // given
+        OwnerCreate ownerCreate = OwnerCreate.builder()
+                .name("우섭이")
+                .password("hihihi3454")
+                .build();
+        Owner owner = ownerService.signup(ownerCreate);
+
+        // expect
+        assertThatThrownBy(() -> ownerService.changePassword(owner.getId(), "hihihi3454"))
+                .isInstanceOf(OwnerException.class)
+                .hasMessageContaining("기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
+    }
+
 
 }
