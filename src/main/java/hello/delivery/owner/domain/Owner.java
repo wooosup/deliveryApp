@@ -1,5 +1,6 @@
 package hello.delivery.owner.domain;
 
+import hello.delivery.common.exception.OwnerException;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -27,6 +28,7 @@ public class Owner {
 
     public Owner changePassword(String newPassword) {
         validatePassword(newPassword);
+        validateSamePassword(newPassword);
         return Owner.builder()
                 .id(id)
                 .name(name)
@@ -36,17 +38,25 @@ public class Owner {
 
     private static void validate(OwnerCreate ownerCreate) {
         if (ownerCreate.getName() == null || ownerCreate.getName().isBlank()) {
-            throw new IllegalArgumentException("이름은 필수 입력 값입니다.");
+            throw new OwnerException("이름은 필수 입력 값입니다.");
         }
         if (ownerCreate.getPassword() == null || ownerCreate.getPassword().isBlank()) {
-            throw new IllegalArgumentException("비밀번호는 필수 입력 값입니다.");
+            throw new OwnerException("비밀번호는 필수 입력 값입니다.");
         }
         validatePassword(ownerCreate.getPassword());
     }
 
     private static void validatePassword(String newPassword) {
         if (newPassword.length() < 8 || newPassword.length() > 20) {
-            throw new IllegalArgumentException("비밀번호는 8자 이상 20자 이하로 입력 가능합니다.");
+            throw new OwnerException("비밀번호는 8자 이상 20자 이하로 입력 가능합니다.");
+        }
+
+    }
+
+    private void validateSamePassword(String newPassword) {
+        if (this.password.equals(newPassword)) {
+            throw new OwnerException("기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
         }
     }
+
 }
