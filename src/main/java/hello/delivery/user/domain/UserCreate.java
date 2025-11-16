@@ -4,10 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.validation.annotation.Validated;
 
 @Getter
-@Validated
 public class UserCreate {
 
     @NotBlank(message = "이름은 필수 입력 값입니다.")
