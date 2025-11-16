@@ -1,6 +1,6 @@
 package hello.delivery.user.domain;
 
-import hello.delivery.common.exception.LoginException;
+import hello.delivery.common.exception.UserException;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -23,6 +23,7 @@ public class User {
     }
 
     public static User signup(UserCreate userCreate) {
+        validate(userCreate);
         return User.builder()
                 .name(userCreate.getName())
                 .username(userCreate.getUsername())
@@ -32,6 +33,7 @@ public class User {
     }
 
     public User changeAddress(String newAddress) {
+        validateAddress(newAddress);
         return User.builder()
                 .id(id)
                 .name(name)
@@ -42,6 +44,7 @@ public class User {
     }
 
     public User changePassword(String newPassword) {
+        validatePasswordLength(newPassword);
         return User.builder()
                 .id(id)
                 .name(name)
@@ -51,13 +54,48 @@ public class User {
                 .build();
     }
 
-    public void checkNicknameAndPassword(String username,String password) {
-        if (isNotSameUsernameAndPassword(username, password)) {
-            throw new LoginException();
+    public void checkPassword(String password) {
+        if (isNotSamePassword(password)) {
+            throw new UserException("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
     }
 
-    private boolean isNotSameUsernameAndPassword(String username, String password) {
-        return !this.username.equals(username) || !this.password.equals(password);
+    private static void validate(UserCreate userCreate) {
+        if (userCreate.getName() == null || userCreate.getName().isBlank()) {
+            throw new UserException("이름은 필수입니다.");
+        }
+        if (userCreate.getUsername() == null || userCreate.getUsername().isBlank()) {
+            throw new UserException("아이디는 필수입니다.");
+        }
+        if (userCreate.getPassword() == null || userCreate.getPassword().isBlank()) {
+            throw new UserException("비밀번호는 필수입니다.");
+        }
+        if (userCreate.getAddress() == null || userCreate.getAddress().isBlank()) {
+            throw new UserException("주소는 필수입니다.");
+        }
+        validateUsernameLength(userCreate.getUsername());
+        validatePasswordLength(userCreate.getPassword());
+    }
+
+    private void validateAddress(String newAddress) {
+        if (newAddress == null || newAddress.isBlank()) {
+            throw new UserException("주소는 비어 있을 수 없습니다.");
+        }
+    }
+
+    private static void validatePasswordLength(String password) {
+        if (password.length() <= 8 || password.length() >= 20) {
+            throw new UserException("비밀번호는 8자 이상 20자 이하로 입력 가능합니다.");
+        }
+    }
+
+    private static void validateUsernameLength(String username) {
+        if (username.length() <= 5 || username.length() >= 20) {
+            throw new UserException("아이디는 5자 이상 20자 이하로 입력 가능합니다.");
+        }
+    }
+
+    private boolean isNotSamePassword(String password) {
+        return !this.password.equals(password);
     }
 }
