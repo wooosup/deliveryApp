@@ -84,13 +84,13 @@ public class User {
     }
 
     private static void validatePasswordLength(String password) {
-        if (password.length() <= 8 || password.length() >= 20) {
+        if (password.length() < 8 || password.length() > 20) {
             throw new UserException("비밀번호는 8자 이상 20자 이하로 입력 가능합니다.");
         }
     }
 
     private static void validateUsernameLength(String username) {
-        if (username.length() <= 5 || username.length() >= 20) {
+        if (username.length() < 5 || username.length() > 20) {
             throw new UserException("아이디는 5자 이상 20자 이하로 입력 가능합니다.");
         }
     }
