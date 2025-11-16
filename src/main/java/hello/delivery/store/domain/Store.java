@@ -9,7 +9,6 @@ import hello.delivery.store.infrastructure.StoreType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -42,7 +41,7 @@ public class Store {
     }
 
     public static Store of(StoreCreate storeCreate, Owner owner, LocalDate currentDate) {
-        Objects.requireNonNull(owner, "가게 주인은 필수입니다.");
+        validate(storeCreate, owner);
         return Store.builder()
                 .owner(owner)
                 .name(storeCreate.getStoreName())
@@ -82,6 +81,18 @@ public class Store {
             throw new DuplicateProductException("이미 존재하는 상품입니다.");
         }
         this.products.add(product);
+    }
+
+    private static void validate(StoreCreate storeCreate, Owner owner) {
+        if (owner == null) {
+            throw new IllegalArgumentException("가게 주인은 필수입니다.");
+        }
+        if (storeCreate.getStoreName() == null || storeCreate.getStoreName().isBlank()) {
+            throw new IllegalArgumentException("가게 이름은 필수 입력 값입니다.");
+        }
+        if (storeCreate.getStoreType() == null) {
+            throw new IllegalArgumentException("가게 타입은 필수 입력 값입니다.");
+        }
     }
 
     private boolean contains(Product product) {
