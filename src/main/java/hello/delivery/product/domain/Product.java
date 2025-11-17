@@ -1,11 +1,10 @@
 package hello.delivery.product.domain;
 
-import hello.delivery.common.exception.InvalidPasswordException;
 import hello.delivery.common.exception.ProductException;
+import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.infrastructure.ProductSellingStatus;
 import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.store.domain.Store;
-import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -30,8 +29,7 @@ public class Product {
     }
 
     public static Product of(ProductCreate productCreate, Store store) {
-        Objects.requireNonNull(store, "가게는 필수입니다.");
-        validateStoreOwner(productCreate, store);
+        validateStore(productCreate, store);
         return Product.builder()
                 .name(productCreate.getName())
                 .price(productCreate.getPrice())
@@ -41,29 +39,30 @@ public class Product {
                 .build();
     }
 
-    private static void validateStoreOwner(ProductCreate productCreate, Store store) {
-        if (!store.getId().equals(productCreate.getStoreId())) {
-            throw new ProductException("가게 주인이 일치하지 않습니다.");
-        }
-    }
-
-    public Product changeSellingStatus(String password, ProductSellingStatus status) {
-        if (isNotSamePassword(password)) {
-            throw new InvalidPasswordException();
+    public Product changeSellingStatus(Owner owner, ProductSellingStatus status) {
+        if (isNotOwner(owner)) {
+            throw new ProductException("상품 상태를 변경할 권한이 없습니다.");
         }
 
-        ProductSellingStatus product = this.productSellingStatus.changeStatus(status);
+        ProductSellingStatus newStatus = this.productSellingStatus.changeStatus(status);
         return Product.builder()
-                .id(this.id)
-                .store(this.store)
-                .name(this.name)
-                .price(this.price)
-                .productType(this.productType)
-                .productSellingStatus(product)
+                .id(id)
+                .store(store)
+                .name(name)
+                .price(price)
+                .productType(productType)
+                .productSellingStatus(newStatus)
                 .build();
     }
 
-    private boolean isNotSamePassword(String password) {
-        return !this.store.getOwner().getPassword().equals(password);
+    private static void validateStore(ProductCreate productCreate, Store store) {
+        if (!store.getId().equals(productCreate.getStoreId())) {
+            throw new ProductException("가게가 일치하지 않습니다.");
+        }
     }
+
+    private boolean isNotOwner(Owner owner) {
+        return !this.store.isOwner(owner);
+    }
+
 }
