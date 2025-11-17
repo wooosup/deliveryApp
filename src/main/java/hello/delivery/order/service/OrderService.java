@@ -35,6 +35,12 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional(readOnly = true)
+    public List<Order> findOrdersByUserId(Long userId) {
+        User user = finder.findByUser(userId);
+        return orderRepository.findOrdersByUserId(user.getId());
+    }
+
     private List<OrderProduct> createOrderProducts(List<OrderProductRequest> orderProducts) {
         return orderProducts.stream()
                 .map(this::createOrderProduct)
