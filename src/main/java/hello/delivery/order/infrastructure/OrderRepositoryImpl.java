@@ -18,8 +18,8 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public List<Order> findByUserId(Long userId) {
-        return orderJpaRepository.findByUserId(userId).stream()
+    public List<Order> findOrdersByUserId(long userId) {
+        return orderJpaRepository.findOrdersByUserId(userId).stream()
                 .map(OrderEntity::toDomain)
                 .toList();
     }
