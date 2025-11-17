@@ -66,6 +66,24 @@ class OrderServiceTest {
         assertThat(order.getTotalPrice()).isEqualTo(40000);
     }
 
+    @Test
+    @DisplayName("사용자 ID로 주문 내역을 조회할 수 있다.")
+    void findOrdersByUser() throws Exception {
+        // given
+        OrderCreate orderCreate = setUpOrderCreate();
+        orderService.order(orderCreate);
+
+        // when
+        List<Order> result = orderService.findOrdersByUserId(orderCreate.getUserId());
+
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getUser().getName()).isEqualTo("김우섭");
+        assertThat(result.get(0).getStore().getName()).isEqualTo("BBQ");
+        assertThat(result.get(0).getTotalPrice()).isEqualTo(40000);
+    }
+
+
     private static Owner buildOwner() {
         return Owner.builder()
                 .id(1L)
