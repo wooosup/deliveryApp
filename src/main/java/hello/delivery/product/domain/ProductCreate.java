@@ -17,7 +17,7 @@ public class ProductCreate {
     private final String name;
 
     @NotNull(message = "상품 가격은 필수 입력 값입니다.")
-    @Positive(message = "상품 가격은 양수여야 합니다.")
+    @Positive(message = "상품 가격은 1원 이상이어야 합니다.")
     private final int price;
 
     @NotNull(message = "상품 타입은 필수 입력 값입니다.")
