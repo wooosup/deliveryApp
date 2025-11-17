@@ -43,8 +43,8 @@ public class Product {
         if (productCreate.getName() == null || productCreate.getName().isBlank()) {
             throw new ProductException("상품 이름은 필수 입력 값입니다.");
         }
-        if (productCreate.getPrice() < 0) {
-            throw new ProductException("상품 가격은 1원 이상이어야 합니다.");
+        if (productCreate.getPrice() <= 0) {
+            throw new ProductException("상품 가격은 양수여야 합니다.");
         }
         if (productCreate.getType() == null) {
             throw new ProductException("상품 타입은 필수 입력 값입니다.");
