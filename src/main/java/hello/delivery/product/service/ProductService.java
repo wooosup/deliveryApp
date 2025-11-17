@@ -2,7 +2,9 @@ package hello.delivery.product.service;
 
 import static hello.delivery.product.infrastructure.ProductSellingStatus.SELLING;
 
-import hello.delivery.common.exception.ProductNotFound;
+import hello.delivery.common.exception.ProductException;
+import hello.delivery.common.service.port.FinderPort;
+import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.infrastructure.ProductSellingStatus;
@@ -20,28 +22,41 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final FinderPort finder;
 
     @Transactional
-    public Product create(Store store, ProductCreate request) {
+    public Product create(Long ownerId, ProductCreate request) {
+        Store store = finder.findByStore(request.getStoreId());
+        Owner owner = finder.findByOwner(ownerId);
+        validate(store, owner);
+
         Product product = Product.of(request, store);
 
         return productRepository.save(product);
     }
 
     @Transactional
-    public List<Product> creates(Store store, List<ProductCreate> request) {
-        List<Product> products = getProductList(store, request);
+    public List<Product> creates(Long ownerId, List<ProductCreate> requests) {
+        validateList(requests);
+        Long storeId = requests.get(0).getStoreId();
+        validateSameStore(requests, storeId);
 
+        Store store = finder.findByStore(storeId);
+        Owner owner = finder.findByOwner(ownerId);
+        validate(store, owner);
+
+        List<Product> products = getProductList(store, requests);
         return productRepository.saveAll(products);
     }
 
     @Transactional
-    public Product changeSellingStatus(Long productId, String ownerPassword, ProductSellingStatus status) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(ProductNotFound::new);
+    public Product changeSellingStatus(Long productId, Long ownerId, ProductSellingStatus status) {
+        Product product = finder.findByProduct(productId);
+        Owner owner = finder.findByOwner(ownerId);
 
-        Product changedProduct = product.changeSellingStatus(ownerPassword, status);
-        return productRepository.save(changedProduct);
+        product = product.changeSellingStatus(owner, status);
+        productRepository.save(product);
+        return product;
     }
 
     public List<Product> findAll() {
@@ -56,8 +71,32 @@ public class ProductService {
         return productRepository.findByProductSellingStatusIs(SELLING);
     }
 
-    public void deleteById(Long productId) {
+    @Transactional
+    public void deleteById(Long ownerId, Long productId) {
+        Product product = finder.findByProduct(productId);
+        Owner owner = finder.findByOwner(ownerId);
+        validate(product.getStore(), owner);
+
         productRepository.deleteById(productId);
+    }
+
+    private static void validate(Store store, Owner owner) {
+        if (store.isNotOwner(owner)) {
+            throw new ProductException("권한이 없습니다.");
+        }
+    }
+
+    private static void validateList(List<ProductCreate> requests) {
+        if (requests == null || requests.isEmpty()) {
+            throw new ProductException("상품 목록이 비어 있습니다.");
+        }
+    }
+
+    private static void validateSameStore(List<ProductCreate> requests, Long storeId) {
+        boolean sameStore = requests.stream().allMatch(r -> storeId.equals(r.getStoreId()));
+        if (!sameStore) {
+            throw new ProductException("모든 상품은 동일한 매장에 속해야 합니다.");
+        }
     }
 
     private static List<Product> getProductList(Store store, List<ProductCreate> request) {
