@@ -22,9 +22,9 @@ public class OwnerService {
     public Owner changePassword(Long ownerId, String newPassword) {
         Owner owner = ownerRepository.findById(ownerId)
                 .orElseThrow(UserNotFound::new);
-        Owner changedOwner = owner.changePassword(newPassword);
+        owner = owner.changePassword(newPassword);
 
-        return ownerRepository.save(changedOwner);
+        return ownerRepository.save(owner);
     }
 
 }
