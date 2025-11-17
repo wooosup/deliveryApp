@@ -1,8 +1,13 @@
 package hello.delivery.user.service;
 
+import static hello.delivery.user.infrastructure.UserRole.CUSTOMER;
+import static hello.delivery.user.infrastructure.UserRole.OWNER;
+
 import hello.delivery.common.exception.UserNotFound;
-import hello.delivery.user.domain.User;
+import hello.delivery.user.domain.AddressUpdate;
 import hello.delivery.user.domain.Login;
+import hello.delivery.user.domain.PasswordUpdate;
+import hello.delivery.user.domain.User;
 import hello.delivery.user.domain.UserCreate;
 import hello.delivery.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +21,13 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User signup(UserCreate userCreate) {
-        User user = User.signup(userCreate);
+    public User signupCustomer(UserCreate userCreate) {
+        User user = User.signup(userCreate, CUSTOMER);
+        return userRepository.save(user);
+    }
+
+    public User signupOwner(UserCreate userCreate) {
+        User user = User.signup(userCreate, OWNER);
         return userRepository.save(user);
     }
 
@@ -32,19 +42,20 @@ public class UserService {
         return user;
     }
 
-    public User changeAddress(Long userId, String newAddress) {
+    public User changeAddress(Long userId, AddressUpdate addressUpdate) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
-        user = user.changeAddress(newAddress);
+        user = user.changeAddress(addressUpdate.getAddress());
 
         return userRepository.save(user);
     }
 
-    public User changePassword(Long userId, String newPassword) {
+    public User changePassword(Long userId, PasswordUpdate passwordUpdate) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
-        user = user.changePassword(newPassword);
+        user = user.changePassword(passwordUpdate.getPassword());
 
         return userRepository.save(user);
     }
+
 }

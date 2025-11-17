@@ -2,6 +2,8 @@ package hello.delivery.user.infrastructure;
 
 import hello.delivery.user.domain.User;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,10 +23,11 @@ public class UserEntity {
     private Long id;
 
     private String name;
-
     private String username;
     private String password;
     private String address;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     public static UserEntity of(User user) {
         UserEntity userEntity = new UserEntity();
@@ -33,6 +36,7 @@ public class UserEntity {
         userEntity.username = user.getUsername();
         userEntity.password = user.getPassword();
         userEntity.address = user.getAddress();
+        userEntity.role = user.getRole();
         return userEntity;
     }
 
@@ -43,6 +47,7 @@ public class UserEntity {
                 .username(username)
                 .password(password)
                 .address(address)
+                .role(role)
                 .build();
     }
 }

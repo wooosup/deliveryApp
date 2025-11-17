@@ -1,9 +1,9 @@
 package hello.delivery.store.infrastructure;
 
 import hello.delivery.common.infrastructure.BaseEntity;
-import hello.delivery.owner.infrastructure.OwnerEntity;
 import hello.delivery.product.infrastructure.ProductEntity;
 import hello.delivery.store.domain.Store;
+import hello.delivery.user.infrastructure.UserEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,7 +31,7 @@ public class StoreEntity extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private OwnerEntity owner;
+    private UserEntity owner;
 
     private String name;
 
@@ -52,7 +52,7 @@ public class StoreEntity extends BaseEntity {
     public static StoreEntity of(Store store) {
         StoreEntity storeEntity = new StoreEntity();
         storeEntity.id = store.getId();
-        storeEntity.owner = OwnerEntity.of(store.getOwner());
+        storeEntity.owner = UserEntity.of(store.getOwner());
         storeEntity.name = store.getName();
         storeEntity.dailySales = store.getDailySales();
         storeEntity.totalSales = store.getTotalSales();

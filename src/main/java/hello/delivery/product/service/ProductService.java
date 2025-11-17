@@ -4,13 +4,13 @@ import static hello.delivery.product.infrastructure.ProductSellingStatus.SELLING
 
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.service.port.FinderPort;
-import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.infrastructure.ProductSellingStatus;
 import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.product.service.port.ProductRepository;
 import hello.delivery.store.domain.Store;
+import hello.delivery.user.domain.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class ProductService {
     @Transactional
     public Product create(Long ownerId, ProductCreate request) {
         Store store = finder.findByStore(request.getStoreId());
-        Owner owner = finder.findByOwner(ownerId);
+        User owner = finder.findByOwner(ownerId);
         validate(store, owner);
 
         Product product = Product.of(request, store);
@@ -42,7 +42,7 @@ public class ProductService {
         validateSameStore(requests, storeId);
 
         Store store = finder.findByStore(storeId);
-        Owner owner = finder.findByOwner(ownerId);
+        User owner = finder.findByOwner(ownerId);
         validate(store, owner);
 
         List<Product> products = getProductList(store, requests);
@@ -52,7 +52,7 @@ public class ProductService {
     @Transactional
     public Product changeSellingStatus(Long productId, Long ownerId, ProductSellingStatus status) {
         Product product = finder.findByProduct(productId);
-        Owner owner = finder.findByOwner(ownerId);
+        User owner = finder.findByOwner(ownerId);
 
         product = product.changeSellingStatus(owner, status);
         productRepository.save(product);
@@ -74,14 +74,14 @@ public class ProductService {
     @Transactional
     public void deleteById(Long ownerId, Long productId) {
         Product product = finder.findByProduct(productId);
-        Owner owner = finder.findByOwner(ownerId);
+        User owner = finder.findByOwner(ownerId);
         validate(product.getStore(), owner);
 
         productRepository.deleteById(productId);
     }
 
-    private static void validate(Store store, Owner owner) {
-        if (store.isNotOwner(owner)) {
+    private static void validate(Store store, User owner) {
+        if (!store.getOwner().getId().equals(owner.getId())) {
             throw new ProductException("권한이 없습니다.");
         }
     }

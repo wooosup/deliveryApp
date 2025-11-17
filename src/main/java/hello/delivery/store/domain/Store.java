@@ -3,9 +3,9 @@ package hello.delivery.store.domain;
 import static java.util.Objects.requireNonNullElseGet;
 
 import hello.delivery.common.exception.StoreException;
-import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.infrastructure.StoreType;
+import hello.delivery.user.domain.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import lombok.Getter;
 public class Store {
 
     private final Long id;
-    private final Owner owner;
+    private final User owner;
     private final String name;
     private final StoreType storeType;
     private final List<Product> products;
@@ -26,7 +26,7 @@ public class Store {
     private final LocalDate lastSalesDate;
 
     @Builder
-    private Store(Long id, Owner owner, String name, int dailySales, int totalSales, StoreType storeType,
+    private Store(Long id, User owner, String name, int dailySales, int totalSales, StoreType storeType,
                   List<Product> products, LocalDate openDate,
                   LocalDate lastSalesDate) {
         this.id = id;
@@ -40,8 +40,11 @@ public class Store {
         this.lastSalesDate = lastSalesDate;
     }
 
-    public static Store of(StoreCreate storeCreate, Owner owner, LocalDate currentDate) {
+    public static Store of(StoreCreate storeCreate, User owner, LocalDate currentDate) {
         validate(storeCreate, owner);
+        if (owner.isNotOwner()) {
+            throw new StoreException("가게를 생성할 권한이 없습니다.");
+        }
         return Store.builder()
                 .owner(owner)
                 .name(storeCreate.getStoreName())
@@ -76,7 +79,7 @@ public class Store {
                 .build();
     }
 
-    private static void validate(StoreCreate storeCreate, Owner owner) {
+    private static void validate(StoreCreate storeCreate, User owner) {
         if (owner == null) {
             throw new StoreException("가게 주인은 필수입니다.");
         }
@@ -88,8 +91,8 @@ public class Store {
         }
     }
 
-    public boolean isNotOwner(Owner owner) {
-        return !this.owner.getId().equals(owner.getId());
+    public boolean isNotOwner(User user) {
+        return !this.owner.equals(user);
     }
 
 }

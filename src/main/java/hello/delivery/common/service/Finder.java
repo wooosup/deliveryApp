@@ -4,8 +4,6 @@ import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.exception.StoreNotFound;
 import hello.delivery.common.service.port.FinderPort;
-import hello.delivery.owner.domain.Owner;
-import hello.delivery.owner.service.port.OwnerRepository;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.service.port.ProductRepository;
 import hello.delivery.store.domain.Store;
@@ -21,7 +19,6 @@ public class Finder implements FinderPort {
 
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
-    private final OwnerRepository ownerRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -37,14 +34,14 @@ public class Finder implements FinderPort {
     }
 
     @Override
-    public Owner findByOwner(Long id) {
-        return ownerRepository.findById(id)
+    public User findByOwner(Long id) {
+        return userRepository.findByOwnerId(id)
                 .orElseThrow(UserNotFound::new);
     }
 
     @Override
     public User findByUser(Long id) {
-        return userRepository.findById(id)
+        return userRepository.findByCustomerId(id)
                 .orElseThrow(UserNotFound::new);
     }
 }

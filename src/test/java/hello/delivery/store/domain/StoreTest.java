@@ -1,10 +1,11 @@
 package hello.delivery.store.domain;
 
 import static hello.delivery.store.infrastructure.StoreType.KOREAN_FOOD;
+import static hello.delivery.user.infrastructure.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import hello.delivery.mock.TestClockHolder;
-import hello.delivery.owner.domain.Owner;
+import hello.delivery.user.domain.User;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ class StoreTest {
     void create() throws Exception {
         // given
         LocalDate now = new TestClockHolder().now();
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         StoreCreate storeCreate = StoreCreate.builder()
                 .ownerId(owner.getId())
                 .storeType(KOREAN_FOOD)
@@ -37,7 +38,7 @@ class StoreTest {
     void addTotalSalesWithSameDay() throws Exception {
         // given
         LocalDate now = new TestClockHolder().now();
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         StoreCreate storeCreate = StoreCreate.builder()
                 .ownerId(owner.getId())
                 .storeType(KOREAN_FOOD)
@@ -60,7 +61,7 @@ class StoreTest {
         LocalDate yesterday = LocalDate.of(2025, 11, 9);
         LocalDate today = LocalDate.of(2025, 11, 10);
 
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         StoreCreate storeCreate = StoreCreate.builder()
                 .ownerId(owner.getId())
                 .storeType(KOREAN_FOOD)
@@ -79,11 +80,14 @@ class StoreTest {
         assertThat(secondSale.getLastSalesDate()).isEqualTo(today);
     }
 
-    private static Owner buildOwner() {
-        return Owner.builder()
+    private static User buildOwner() {
+        return User.builder()
                 .id(1L)
-                .name("우섭이")
-                .password("3454")
+                .name("차상훈")
+                .username("wss3325")
+                .password("hihihi3454")
+                .address("대구")
+                .role(OWNER)
                 .build();
     }
 

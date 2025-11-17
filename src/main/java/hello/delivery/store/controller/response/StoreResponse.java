@@ -1,9 +1,9 @@
 package hello.delivery.store.controller.response;
 
-import hello.delivery.owner.controller.response.OwnerResponse;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.infrastructure.StoreType;
+import hello.delivery.user.controller.response.UserResponse;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,11 +15,11 @@ public class StoreResponse {
     private final String name;
     private final StoreType storeType;
     private final Integer totalSales;
-    private final OwnerResponse owner;
+    private final UserResponse owner;
     private final List<ProductResponse> products;
 
     @Builder
-    private StoreResponse(Long id, String name, StoreType storeType, Integer totalSales, OwnerResponse owner,
+    private StoreResponse(Long id, String name, StoreType storeType, Integer totalSales, UserResponse owner,
                           List<ProductResponse> products) {
         this.id = id;
         this.name = name;
@@ -35,7 +35,7 @@ public class StoreResponse {
                 .name(store.getName())
                 .storeType(store.getStoreType())
                 .totalSales(store.getTotalSales())
-                .owner(OwnerResponse.of(store.getOwner()))
+                .owner(UserResponse.of(store.getOwner()))
                 .products(store.getProducts().stream()
                         .map(ProductResponse::of)
                         .toList())

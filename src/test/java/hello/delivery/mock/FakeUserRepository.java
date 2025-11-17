@@ -44,4 +44,18 @@ public class FakeUserRepository implements UserRepository {
                 .filter(u -> u.getUsername().equals(username))
                 .findAny();
     }
+
+    @Override
+    public Optional<User> findByOwnerId(Long id) {
+        return data.stream()
+                .filter(u -> u.getRole().equals("OWNER") && u.getId().equals(id))
+                .findAny();
+    }
+
+    @Override
+    public Optional<User> findByCustomerId(Long id) {
+        return data.stream()
+                .filter(u -> u.getRole().equals("CUSTOMER") && u.getId().equals(id))
+                .findAny();
+    }
 }

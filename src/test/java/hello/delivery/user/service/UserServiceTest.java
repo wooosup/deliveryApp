@@ -1,13 +1,16 @@
 package hello.delivery.user.service;
 
+import static hello.delivery.user.infrastructure.UserRole.CUSTOMER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.exception.UserException;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.mock.FakeUserRepository;
-import hello.delivery.user.domain.User;
+import hello.delivery.user.domain.AddressUpdate;
 import hello.delivery.user.domain.Login;
+import hello.delivery.user.domain.PasswordUpdate;
+import hello.delivery.user.domain.User;
 import hello.delivery.user.domain.UserCreate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +28,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자는 회원가입을 할 수 있다.")
-    void signup() throws Exception {
+    void signupCustomer() throws Exception {
         // given
         UserCreate userCreate = UserCreate.builder()
                 .name("김우섭")
@@ -35,7 +38,7 @@ class UserServiceTest {
                 .build();
 
         // when
-        User result = userService.signup(userCreate);
+        User result = userService.signupCustomer(userCreate);
 
         // then
         assertThat(result.getName()).isEqualTo("김우섭");
@@ -53,7 +56,7 @@ class UserServiceTest {
                 .password("hihihi3454")
                 .address("대구")
                 .build();
-        userService.signup(userCreate);
+        userService.signupCustomer(userCreate);
         Login user = Login.builder()
                 .username("wss3325")
                 .password("hihihi3454")
@@ -76,7 +79,7 @@ class UserServiceTest {
                 .password("hihihi3454")
                 .address("대구")
                 .build();
-        userService.signup(userCreate);
+        userService.signupCustomer(userCreate);
         Login user = Login.builder()
                 .username("zzzzzzz")
                 .password("hihihi1111")
@@ -98,7 +101,7 @@ class UserServiceTest {
                 .password("hihihi3454")
                 .address("대구")
                 .build();
-        userService.signup(userCreate);
+        userService.signupCustomer(userCreate);
         Login user = Login.builder()
                 .username("wss3325")
                 .password("hihihi1111")
@@ -121,10 +124,13 @@ class UserServiceTest {
                 .password("hihihi3454")
                 .address("대구")
                 .build();
-        User user = userService.signup(userCreate);
+        User user = userService.signupCustomer(userCreate);
+        AddressUpdate addressUpdate = AddressUpdate.builder()
+                .address("서울")
+                .build();
 
         // when
-        User result = userService.changeAddress(user.getId(), "서울");
+        User result = userService.changeAddress(user.getId(), addressUpdate);
 
         // then
         assertThat(result.getUsername()).isEqualTo("wss3325");
@@ -142,10 +148,13 @@ class UserServiceTest {
                 .password("hihihi3454")
                 .address("대구")
                 .build();
-        User user = userService.signup(userCreate);
+        User user = userService.signupCustomer(userCreate);
+        PasswordUpdate passwordUpdate = PasswordUpdate.builder()
+                .password("hihihi9999")
+                .build();
 
         // when
-        userService.changePassword(user.getId(), "hihihi9999");
+        userService.changePassword(user.getId(), passwordUpdate);
         Login result = Login.builder()
                 .username("wss3325")
                 .password("hihihi9999")
@@ -165,11 +174,15 @@ class UserServiceTest {
                 .username("wss3325")
                 .password("hihihi3454")
                 .address("대구")
+                .role(CUSTOMER)
                 .build();
-        User user = userService.signup(userCreate);
+        User user = userService.signupCustomer(userCreate);
+        PasswordUpdate passwordUpdate = PasswordUpdate.builder()
+                .password("9999")
+                .build();
 
         // expect
-        assertThatThrownBy(() -> userService.changePassword(user.getId(), "1234567"))
+        assertThatThrownBy(() -> userService.changePassword(user.getId(), passwordUpdate))
                 .isInstanceOf(UserException.class)
                 .hasMessageContaining("비밀번호는 8자 이상 20자 이하로 입력 가능합니다.");
     }
@@ -184,10 +197,13 @@ class UserServiceTest {
                 .password("hihihi3454")
                 .address("대구")
                 .build();
-        User user = userService.signup(userCreate);
+        User user = userService.signupCustomer(userCreate);
+        PasswordUpdate passwordUpdate = PasswordUpdate.builder()
+                .password("hihihi3454")
+                .build();
 
         // expect
-        assertThatThrownBy(() -> userService.changePassword(user.getId(), "hihihi3454"))
+        assertThatThrownBy(() -> userService.changePassword(user.getId(), passwordUpdate))
                 .isInstanceOf(UserException.class)
                 .hasMessageContaining("기존 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.");
     }

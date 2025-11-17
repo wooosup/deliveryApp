@@ -11,4 +11,8 @@ public interface UserRepository {
 
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByOwnerId(Long id);
+
+    Optional<User> findByCustomerId(Long id);
+
 }

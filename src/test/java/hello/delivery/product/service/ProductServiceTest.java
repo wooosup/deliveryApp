@@ -3,6 +3,7 @@ package hello.delivery.product.service;
 import static hello.delivery.product.infrastructure.ProductSellingStatus.STOP_SELLING;
 import static hello.delivery.product.infrastructure.ProductType.BEVERAGE;
 import static hello.delivery.product.infrastructure.ProductType.DESSERT;
+import static hello.delivery.user.infrastructure.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -10,10 +11,10 @@ import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeProductRepository;
-import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.store.domain.Store;
+import hello.delivery.user.domain.User;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +37,7 @@ class ProductServiceTest {
     @DisplayName("가게에 상품을 등록할 수 있다.")
     void create() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
                 .storeId(store.getId())
@@ -60,7 +61,7 @@ class ProductServiceTest {
     @DisplayName("가게에 여러 상품을 등록할 수 있다.")
     void creates() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate product1 = ProductCreate.builder()
                 .storeId(store.getId())
@@ -96,7 +97,7 @@ class ProductServiceTest {
     @DisplayName("모든 상품이 같은 가게가 아니면 예외를 던진다.")
     void validateCreates() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate product1 = ProductCreate.builder()
                 .storeId(store.getId())
@@ -128,7 +129,7 @@ class ProductServiceTest {
     @DisplayName("상품의 판매 상태를 변경할 수 있다.")
     void changeSellingStatus() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
                 .storeId(store.getId())
@@ -150,7 +151,7 @@ class ProductServiceTest {
     @DisplayName("모든 상품을 조회할 수 있다.")
     void findAll() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate product1 = ProductCreate.builder()
                 .storeId(store.getId())
@@ -179,7 +180,7 @@ class ProductServiceTest {
     @DisplayName("상품 타입으로 상품을 조회할 수 있다.")
     void findByType() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate product1 = ProductCreate.builder()
                 .storeId(store.getId())
@@ -207,7 +208,7 @@ class ProductServiceTest {
     @DisplayName("판매중인 상품을 조회할 수 있다.")
     void findBySelling() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate product1 = ProductCreate.builder()
                 .storeId(store.getId())
@@ -249,17 +250,20 @@ class ProductServiceTest {
     }
 
 
-    private Owner buildOwner() {
-        Owner owner = Owner.builder()
+    private User buildOwner() {
+        User owner = User.builder()
                 .id(1L)
-                .name("우섭이")
+                .name("차상훈")
+                .username("wss3325")
                 .password("hihihi3454")
+                .address("대구")
+                .role(OWNER)
                 .build();
         fakeFinder.addOwner(owner);
         return owner;
     }
 
-    private Store buildStore(Owner owner) {
+    private Store buildStore(User owner) {
         Store store = Store.builder()
                 .id(1L)
                 .name("투썸")
@@ -268,5 +272,6 @@ class ProductServiceTest {
         fakeFinder.addStore(store);
         return store;
     }
+
 
 }

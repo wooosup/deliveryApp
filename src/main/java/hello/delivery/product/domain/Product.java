@@ -1,10 +1,10 @@
 package hello.delivery.product.domain;
 
 import hello.delivery.common.exception.ProductException;
-import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.infrastructure.ProductSellingStatus;
 import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.store.domain.Store;
+import hello.delivery.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -54,8 +54,8 @@ public class Product {
         }
     }
 
-    public Product changeSellingStatus(Owner owner, ProductSellingStatus status) {
-        if (isNotOwner(owner)) {
+    public Product changeSellingStatus(User owner, ProductSellingStatus status) {
+        if (store.isNotOwner(owner)) {
             throw new ProductException("상품 상태를 변경할 권한이 없습니다.");
         }
 
@@ -68,10 +68,6 @@ public class Product {
                 .productType(productType)
                 .productSellingStatus(newStatus)
                 .build();
-    }
-
-    private boolean isNotOwner(Owner owner) {
-        return this.store.isNotOwner(owner);
     }
 
 }

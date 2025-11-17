@@ -4,7 +4,6 @@ import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.exception.StoreNotFound;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.common.service.port.FinderPort;
-import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
@@ -15,7 +14,7 @@ public class FakeFinder implements FinderPort {
 
     private final Map<Long, Product> products = new HashMap<>();
     private final Map<Long, Store> stores = new HashMap<>();
-    private final Map<Long, Owner> owners = new HashMap<>();
+    private final Map<Long, User> owners = new HashMap<>();
     private final Map<Long, User> users = new HashMap<>();
 
     public void addProduct(Product product) {
@@ -26,7 +25,7 @@ public class FakeFinder implements FinderPort {
         stores.put(store.getId(), store);
     }
 
-    public void addOwner(Owner owner) {
+    public void addOwner(User owner) {
         owners.put(owner.getId(), owner);
     }
 
@@ -53,8 +52,8 @@ public class FakeFinder implements FinderPort {
     }
 
     @Override
-    public Owner findByOwner(Long id) {
-        Owner o = owners.get(id);
+    public User findByOwner(Long id) {
+        User o = owners.get(id);
         if (o == null) {
             throw new UserNotFound();
         }

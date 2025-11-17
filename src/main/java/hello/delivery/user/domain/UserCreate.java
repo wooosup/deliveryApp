@@ -1,5 +1,6 @@
 package hello.delivery.user.domain;
 
+import hello.delivery.user.infrastructure.UserRole;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -23,11 +24,15 @@ public class UserCreate {
     @NotBlank(message = "주소는 필수 입력 값입니다.")
     private final String address;
 
+    @NotBlank(message = "역할은 필수 입력 값입니다.")
+    private final UserRole role;
+
     @Builder
-    private UserCreate(String name, String username, String password, String address) {
+    private UserCreate(String name, String username, String password, String address, UserRole role) {
         this.name = name;
         this.username = username;
         this.password = password;
         this.address = address;
+        this.role = role;
     }
 }

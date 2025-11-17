@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.exception.UserException;
+import hello.delivery.user.infrastructure.UserRole;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ class UserTest {
                 .build();
 
         // when
-        User signupUser = User.signup(userCreate);
+        User signupUser = User.signup(userCreate, UserRole.CUSTOMER);
 
         // then
         assertThat(signupUser.getName()).isEqualTo("김우섭");

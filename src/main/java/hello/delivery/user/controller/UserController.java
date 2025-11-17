@@ -3,7 +3,9 @@ package hello.delivery.user.controller;
 
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.user.controller.response.UserResponse;
+import hello.delivery.user.domain.AddressUpdate;
 import hello.delivery.user.domain.Login;
+import hello.delivery.user.domain.PasswordUpdate;
 import hello.delivery.user.domain.UserCreate;
 import hello.delivery.user.service.UserService;
 import jakarta.validation.Valid;
@@ -23,7 +25,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ApiResponse<UserResponse> signup(@Valid @RequestBody UserCreate request) {
-        return ApiResponse.ok(UserResponse.of(userService.signup(request)));
+        return ApiResponse.ok(UserResponse.of(userService.signupCustomer(request)));
     }
 
     @PostMapping("/login")
@@ -32,13 +34,13 @@ public class UserController {
     }
 
     @PostMapping("/change-address/{id}")
-    public ApiResponse<UserResponse> changeAddress(@PathVariable Long id, @RequestBody String newAddress) {
-        return ApiResponse.ok(UserResponse.of(userService.changeAddress(id, newAddress)));
+    public ApiResponse<UserResponse> changeAddress(@PathVariable Long id, @RequestBody AddressUpdate request) {
+        return ApiResponse.ok(UserResponse.of(userService.changeAddress(id, request)));
     }
 
     @PostMapping("/change-password/{id}")
-    public ApiResponse<UserResponse> changePassword(@PathVariable Long id, @RequestBody String newPassword) {
-        return ApiResponse.ok(UserResponse.of(userService.changePassword(id, newPassword)));
+    public ApiResponse<UserResponse> changePassword(@PathVariable Long id, @RequestBody PasswordUpdate request) {
+        return ApiResponse.ok(UserResponse.of(userService.changePassword(id, request)));
     }
 
 }

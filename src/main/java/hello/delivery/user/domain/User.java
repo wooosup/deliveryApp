@@ -1,6 +1,7 @@
 package hello.delivery.user.domain;
 
 import hello.delivery.common.exception.UserException;
+import hello.delivery.user.infrastructure.UserRole;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,23 +13,26 @@ public class User {
     private final String username;
     private final String password;
     private final String address;
+    private final UserRole role;
 
     @Builder
-    private User(Long id, String name, String username, String password, String address) {
+    private User(Long id, String name, String username, String password, String address, UserRole role) {
         this.id = id;
         this.name = name;
         this.username = username;
         this.password = password;
         this.address = address;
+        this.role = role;
     }
 
-    public static User signup(UserCreate userCreate) {
+    public static User signup(UserCreate userCreate, UserRole role) {
         validate(userCreate);
         return User.builder()
                 .name(userCreate.getName())
                 .username(userCreate.getUsername())
                 .password(userCreate.getPassword())
                 .address(userCreate.getAddress())
+                .role(role)
                 .build();
     }
 
@@ -69,6 +73,10 @@ public class User {
                 .password(password)
                 .address(address)
                 .build();
+    }
+
+    public boolean isNotOwner() {
+        return this.role != UserRole.OWNER;
     }
 
     private static void validate(UserCreate userCreate) {

@@ -36,4 +36,11 @@ public class OrderResponse {
                         .toList())
                 .build();
     }
+
+    public static List<OrderResponse> of(List<Order> orders) {
+        return orders.stream()
+                .map(OrderResponse::of)
+                .toList();
+    }
+
 }

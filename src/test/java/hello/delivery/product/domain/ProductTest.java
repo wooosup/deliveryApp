@@ -3,12 +3,13 @@ package hello.delivery.product.domain;
 import static hello.delivery.product.infrastructure.ProductSellingStatus.SELLING;
 import static hello.delivery.product.infrastructure.ProductSellingStatus.STOP_SELLING;
 import static hello.delivery.product.infrastructure.ProductType.FOOD;
+import static hello.delivery.user.infrastructure.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.exception.ProductException;
-import hello.delivery.owner.domain.Owner;
 import hello.delivery.store.domain.Store;
+import hello.delivery.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ class ProductTest {
     @DisplayName("상품을 생성할 수 있다.")
     void create() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
                 .storeId(store.getId())
@@ -41,7 +42,7 @@ class ProductTest {
     @DisplayName("상품 가격이 1원 미만이면 예외를 던진다.")
     void validatePrice() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
                 .storeId(store.getId())
@@ -60,7 +61,7 @@ class ProductTest {
     @DisplayName("가게 주인이 일치하지 않으면 예외를 던진다.")
     void invalidStoreOwner() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
                 .storeId(2L)
@@ -79,7 +80,7 @@ class ProductTest {
     @DisplayName("판매 상태를 변경한다.")
     void changeSellingStatus() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
                 .storeId(store.getId())
@@ -100,7 +101,7 @@ class ProductTest {
     @DisplayName("판매 상태 변경에 권한이 없으면 예외를 던진다.")
     void validateChangeSellingStatus() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
                 .storeId(store.getId())
@@ -110,10 +111,11 @@ class ProductTest {
                 .build();
         Product product = Product.of(productCreate, store);
 
-        Owner notOwner = Owner.builder()
+        User notOwner = User.builder()
                 .id(2L)
                 .name("ㅋㅋ")
                 .password("asdasds12434")
+                .role(OWNER)
                 .build();
 
         // expect
@@ -122,15 +124,18 @@ class ProductTest {
                 .hasMessageContaining("상품 상태를 변경할 권한이 없습니다.");
     }
 
-    private static Owner buildOwner() {
-        return Owner.builder()
+    private static User buildOwner() {
+        return User.builder()
                 .id(1L)
-                .name("우섭이")
+                .name("차상훈")
+                .username("wss3325")
                 .password("hihihi3454")
+                .address("대구")
+                .role(OWNER)
                 .build();
     }
 
-    private static Store buildStore(Owner owner) {
+    private static Store buildStore(User owner) {
         return Store.builder()
                 .id(1L)
                 .name("BBQ")

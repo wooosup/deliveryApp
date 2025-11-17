@@ -2,12 +2,13 @@ package hello.delivery.product.service.port;
 
 import static hello.delivery.product.infrastructure.ProductSellingStatus.STOP_SELLING;
 import static hello.delivery.product.infrastructure.ProductType.FOOD;
+import static hello.delivery.user.infrastructure.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import hello.delivery.mock.FakeProductRepository;
-import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.domain.Store;
+import hello.delivery.user.domain.User;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +27,7 @@ class ProductRepositoryTest {
     @DisplayName("상품 타입으로 상품을 조회한다.")
     void findByProductType() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         Product product = Product.builder()
                 .name("치킨")
@@ -49,7 +50,7 @@ class ProductRepositoryTest {
     @DisplayName("상품 판매 상태로 상품을 조회한다.")
     void findByProductSellingStatusIs() throws Exception {
         // given
-        Owner owner = buildOwner();
+        User owner = buildOwner();
         Store store = buildStore(owner);
         Product product = Product.builder()
                 .name("치킨")
@@ -69,22 +70,24 @@ class ProductRepositoryTest {
         assertThat(result.get(0).getPrice()).isEqualTo(20000);
     }
 
-    private static Owner buildOwner() {
-        return Owner.builder()
+    private static User buildOwner() {
+        return User.builder()
                 .id(1L)
-                .name("우섭이")
-                .password("3454")
+                .name("차상훈")
+                .username("wss3325")
+                .password("hihihi3454")
+                .address("대구")
+                .role(OWNER)
                 .build();
     }
 
-    private static Store buildStore(Owner owner) {
+    private static Store buildStore(User owner) {
         return Store.builder()
                 .id(1L)
                 .name("BBQ")
                 .owner(owner)
                 .build();
     }
-
 
 
 }
