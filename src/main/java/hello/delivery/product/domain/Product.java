@@ -29,7 +29,7 @@ public class Product {
     }
 
     public static Product of(ProductCreate productCreate, Store store) {
-        validateStore(productCreate, store);
+        validate(productCreate, store);
         return Product.builder()
                 .name(productCreate.getName())
                 .price(productCreate.getPrice())
@@ -37,6 +37,21 @@ public class Product {
                 .productSellingStatus(ProductSellingStatus.SELLING)
                 .store(store)
                 .build();
+    }
+
+    private static void validate(ProductCreate productCreate, Store store) {
+        if (productCreate.getName() == null || productCreate.getName().isBlank()) {
+            throw new ProductException("상품 이름은 필수 입력 값입니다.");
+        }
+        if (productCreate.getPrice() < 0) {
+            throw new ProductException("상품 가격은 1원 이상이어야 합니다.");
+        }
+        if (productCreate.getType() == null) {
+            throw new ProductException("상품 타입은 필수 입력 값입니다.");
+        }
+        if (!store.getId().equals(productCreate.getStoreId())) {
+            throw new ProductException("가게가 일치하지 않습니다.");
+        }
     }
 
     public Product changeSellingStatus(Owner owner, ProductSellingStatus status) {
@@ -53,12 +68,6 @@ public class Product {
                 .productType(productType)
                 .productSellingStatus(newStatus)
                 .build();
-    }
-
-    private static void validateStore(ProductCreate productCreate, Store store) {
-        if (!store.getId().equals(productCreate.getStoreId())) {
-            throw new ProductException("가게가 일치하지 않습니다.");
-        }
     }
 
     private boolean isNotOwner(Owner owner) {
