@@ -42,4 +42,10 @@ public class StoreResponse {
                 .build();
     }
 
+    public static List<StoreResponse> of(List<Store> stores) {
+        return stores.stream()
+                .map(StoreResponse::of)
+                .toList();
+    }
+
 }
