@@ -6,7 +6,6 @@ import static hello.delivery.product.infrastructure.ProductType.FOOD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import hello.delivery.common.exception.InvalidPasswordException;
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.owner.domain.Owner;
 import hello.delivery.store.domain.Store;
@@ -39,23 +38,6 @@ class ProductTest {
     }
 
     @Test
-    @DisplayName("가게가 비어있으면 예외를 던진다.")
-    void invalidStoreIsEmpty() throws Exception {
-        // given
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeId(1L)
-                .name("치킨")
-                .price(20000)
-                .type(FOOD)
-                .build();
-
-        // expect
-        assertThatThrownBy(() -> Product.of(productCreate, null))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("가게는 필수입니다.");
-    }
-
-    @Test
     @DisplayName("가게 주인이 일치하지 않으면 예외를 던진다.")
     void invalidStoreOwner() throws Exception {
         // given
@@ -71,11 +53,11 @@ class ProductTest {
         // expect
         assertThatThrownBy(() -> Product.of(productCreate, store))
                 .isInstanceOf(ProductException.class)
-                .hasMessageContaining("가게 주인이 일치하지 않습니다.");
+                .hasMessageContaining("가게가 일치하지 않습니다.");
     }
 
     @Test
-    @DisplayName("비밀번호를 받아 판매 상태를 변경한다.")
+    @DisplayName("판매 상태를 변경한다.")
     void changeSellingStatus() throws Exception {
         // given
         Owner owner = buildOwner();
@@ -89,15 +71,15 @@ class ProductTest {
         Product product = Product.of(productCreate, store);
 
         // when
-        Product result = product.changeSellingStatus("3454", STOP_SELLING);
+        Product result = product.changeSellingStatus(owner, STOP_SELLING);
 
         // then
         assertThat(result.getProductSellingStatus()).isEqualTo(STOP_SELLING);
     }
 
     @Test
-    @DisplayName("비밀번호가 틀리면 판매 상태가 변경되지 않고 예외가 발생한다.")
-    void doesNotChangeSellingStatus() throws Exception {
+    @DisplayName("판매 상태 변경에 권한이 없으면 예외를 던진다.")
+    void validateChangeSellingStatus() throws Exception {
         // given
         Owner owner = buildOwner();
         Store store = buildStore(owner);
@@ -109,17 +91,23 @@ class ProductTest {
                 .build();
         Product product = Product.of(productCreate, store);
 
+        Owner notOwner = Owner.builder()
+                .id(2L)
+                .name("ㅋㅋ")
+                .password("asdasds12434")
+                .build();
+
         // expect
-        assertThatThrownBy(() -> product.changeSellingStatus("1111", STOP_SELLING))
-                .isInstanceOf(InvalidPasswordException.class)
-                .hasMessageContaining("비밀번호가 일치하지 않습니다.");
+        assertThatThrownBy(() -> product.changeSellingStatus(notOwner, STOP_SELLING))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("상품 상태를 변경할 권한이 없습니다.");
     }
 
     private static Owner buildOwner() {
         return Owner.builder()
                 .id(1L)
                 .name("우섭이")
-                .password("3454")
+                .password("hihihi3454")
                 .build();
     }
 
