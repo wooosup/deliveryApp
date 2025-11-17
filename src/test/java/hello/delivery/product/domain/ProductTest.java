@@ -38,6 +38,25 @@ class ProductTest {
     }
 
     @Test
+    @DisplayName("상품 가격이 1원 미만이면 예외를 던진다.")
+    void validatePrice() throws Exception {
+        // given
+        Owner owner = buildOwner();
+        Store store = buildStore(owner);
+        ProductCreate productCreate = ProductCreate.builder()
+                .storeId(store.getId())
+                .name("치킨")
+                .price(0)
+                .type(FOOD)
+                .build();
+
+        // expect
+        assertThatThrownBy(() -> Product.of(productCreate, store))
+                .isInstanceOf(ProductException.class)
+                .hasMessageContaining("상품 가격은 1원 이상이어야 합니다.");
+    }
+
+    @Test
     @DisplayName("가게 주인이 일치하지 않으면 예외를 던진다.")
     void invalidStoreOwner() throws Exception {
         // given
