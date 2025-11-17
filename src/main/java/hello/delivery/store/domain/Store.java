@@ -98,4 +98,8 @@ public class Store {
     private boolean contains(Product product) {
         return this.products.contains(product);
     }
+
+    public boolean isNotOwner(Owner owner) {
+        return !this.owner.getId().equals(owner.getId());
+    }
 }

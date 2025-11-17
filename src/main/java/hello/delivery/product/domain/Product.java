@@ -62,7 +62,7 @@ public class Product {
     }
 
     private boolean isNotOwner(Owner owner) {
-        return !this.store.isOwner(owner);
+        return this.store.isNotOwner(owner);
     }
 
 }
