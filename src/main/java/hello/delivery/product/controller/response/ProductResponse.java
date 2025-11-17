@@ -4,6 +4,7 @@ import hello.delivery.product.domain.Product;
 import hello.delivery.product.infrastructure.ProductSellingStatus;
 import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.store.controller.response.StoreResponse;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,7 +19,8 @@ public class ProductResponse {
     private final ProductSellingStatus status;
 
     @Builder
-    private ProductResponse(Long id, StoreResponse store, String name, int price, ProductType type, ProductSellingStatus status) {
+    private ProductResponse(Long id, StoreResponse store, String name, int price, ProductType type,
+                            ProductSellingStatus status) {
         this.id = id;
         this.store = store;
         this.name = name;
@@ -37,4 +39,11 @@ public class ProductResponse {
                 .status(product.getProductSellingStatus())
                 .build();
     }
+
+    public static List<ProductResponse> of(List<Product> products) {
+        return products.stream()
+                .map(ProductResponse::of)
+                .toList();
+    }
+
 }
