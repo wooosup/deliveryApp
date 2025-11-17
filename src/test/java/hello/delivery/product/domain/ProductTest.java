@@ -53,7 +53,7 @@ class ProductTest {
         // expect
         assertThatThrownBy(() -> Product.of(productCreate, store))
                 .isInstanceOf(ProductException.class)
-                .hasMessageContaining("상품 가격은 1원 이상이어야 합니다.");
+                .hasMessageContaining("상품 가격은 양수여야 합니다.");
     }
 
     @Test
