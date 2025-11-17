@@ -24,23 +24,27 @@ public class UserService {
     public User login(Login login) {
         User user = userRepository.findByUsername(login.getUsername())
                 .orElseThrow(UserNotFound::new);
-
         user.checkPassword(login.getPassword());
+
+        user = user.login();
+        userRepository.save(user);
+
         return user;
     }
 
     public User changeAddress(Long userId, String newAddress) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
-        User changedUser = user.changeAddress(newAddress);
-        return userRepository.save(changedUser);
+        user = user.changeAddress(newAddress);
+
+        return userRepository.save(user);
     }
 
     public User changePassword(Long userId, String newPassword) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
-        User changedUser = user.changePassword(newPassword);
+        user = user.changePassword(newPassword);
 
-        return userRepository.save(changedUser);
+        return userRepository.save(user);
     }
 }

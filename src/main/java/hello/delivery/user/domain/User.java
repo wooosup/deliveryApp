@@ -61,6 +61,16 @@ public class User {
         }
     }
 
+    public User login() {
+        return User.builder()
+                .id(id)
+                .name(name)
+                .username(username)
+                .password(password)
+                .address(address)
+                .build();
+    }
+
     private static void validate(UserCreate userCreate) {
         if (userCreate.getName() == null || userCreate.getName().isBlank()) {
             throw new UserException("이름은 필수입니다.");
