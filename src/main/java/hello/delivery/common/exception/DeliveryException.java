@@ -1,17 +1,16 @@
 package hello.delivery.common.exception;
 
-import java.util.HashMap;
-import java.util.Map;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public abstract class DeliveryException extends RuntimeException {
 
-    private final Map<String, String> validation = new HashMap<>();
+    private final HttpStatus status;
 
-    public DeliveryException(String message) {
+    public DeliveryException(String message, HttpStatus status) {
         super(message);
+        this.status = status;
     }
 
-    public abstract int getStatusCode();
 }

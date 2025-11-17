@@ -1,14 +1,11 @@
 package hello.delivery.common.exception;
 
-public class UserException extends DeliveryException{
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+public class UserException extends DeliveryException {
 
     public UserException(String message) {
-        super(message);
-    }
-
-    @Override
-    public int getStatusCode() {
-        return 400;
+        super(message, NOT_FOUND);
     }
 
 }

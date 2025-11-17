@@ -32,20 +32,20 @@ public class ExceptionController {
 
     @ExceptionHandler(DeliveryException.class)
     public ResponseEntity<ErrorResponse> deliveryException(DeliveryException e) {
-        return ResponseEntity.status(e.getStatusCode())
-                .body(ErrorResponse.of(
-                                String.valueOf(e.getStatusCode()),
-                                e.getMessage()
-                        )
-                );
+        ErrorResponse response = ErrorResponse.builder()
+                .code(String.valueOf(e.getStatus().value()))
+                .message(e.getMessage())
+                .build();
+
+        return new ResponseEntity<>(response, e.getStatus());
     }
 
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse generalServerError() {
-        return ErrorResponse.of(
-                "500",
-                "알 수 없는 오류가 발생했습니다."
-        );
+        return ErrorResponse.builder()
+                .code("500")
+                .message("서버에 오류가 발생했습니다.")
+                .build();
     }
 }
