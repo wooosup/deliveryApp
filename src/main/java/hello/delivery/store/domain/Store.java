@@ -2,7 +2,7 @@ package hello.delivery.store.domain;
 
 import static java.util.Objects.requireNonNullElseGet;
 
-import hello.delivery.common.exception.DuplicateProductException;
+import hello.delivery.common.exception.StoreException;
 import hello.delivery.owner.domain.Owner;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.infrastructure.StoreType;
@@ -76,30 +76,20 @@ public class Store {
                 .build();
     }
 
-    public void addProduct(Product product) {
-        if (contains(product)) {
-            throw new DuplicateProductException("이미 존재하는 상품입니다.");
-        }
-        this.products.add(product);
-    }
-
     private static void validate(StoreCreate storeCreate, Owner owner) {
         if (owner == null) {
-            throw new IllegalArgumentException("가게 주인은 필수입니다.");
+            throw new StoreException("가게 주인은 필수입니다.");
         }
         if (storeCreate.getStoreName() == null || storeCreate.getStoreName().isBlank()) {
-            throw new IllegalArgumentException("가게 이름은 필수 입력 값입니다.");
+            throw new StoreException("가게 이름은 필수 입력 값입니다.");
         }
         if (storeCreate.getStoreType() == null) {
-            throw new IllegalArgumentException("가게 타입은 필수 입력 값입니다.");
+            throw new StoreException("가게 타입은 필수 입력 값입니다.");
         }
-    }
-
-    private boolean contains(Product product) {
-        return this.products.contains(product);
     }
 
     public boolean isNotOwner(Owner owner) {
         return !this.owner.getId().equals(owner.getId());
     }
+
 }
