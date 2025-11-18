@@ -25,36 +25,41 @@ public class ProductService {
     private final FinderPort finder;
 
     @Transactional
-    public Product create(Long ownerId, ProductCreate request) {
+    public Product create(ProductCreate request) {
         Store store = finder.findByStore(request.getStoreId());
-        User owner = finder.findByOwner(ownerId);
+        User owner = finder.findByOwner(request.getOwnerId());
         validate(store, owner);
 
-        Product product = Product.of(request, store);
+        validateProductDuplicate(store, request.getName());
+
+        Product product = Product.of(request, store, owner);
 
         return productRepository.save(product);
     }
 
     @Transactional
-    public List<Product> creates(Long ownerId, List<ProductCreate> requests) {
+    public List<Product> creates(List<ProductCreate> requests) {
         validateList(requests);
         Long storeId = requests.get(0).getStoreId();
         validateSameStore(requests, storeId);
 
         Store store = finder.findByStore(storeId);
-        User owner = finder.findByOwner(ownerId);
+        User owner = finder.findByOwner(requests.get(0).getOwnerId());
         validate(store, owner);
 
-        List<Product> products = getProductList(store, requests);
+        for (ProductCreate request : requests) {
+            validateProductDuplicate(store, request.getName());
+        }
+
+        List<Product> products = getProductList(store, owner, requests);
         return productRepository.saveAll(products);
     }
 
     @Transactional
-    public Product changeSellingStatus(Long productId, Long ownerId, ProductSellingStatus status) {
-        Product product = finder.findByProduct(productId);
-        User owner = finder.findByOwner(ownerId);
+    public Product changeSellingStatus(Long id, ProductSellingStatus status) {
+        Product product = finder.findByProduct(id);
 
-        product = product.changeSellingStatus(owner, status);
+        product = product.changeSellingStatus(status);
         productRepository.save(product);
         return product;
     }
@@ -63,21 +68,35 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public List<Product> findByType(ProductType type) {
-        return productRepository.findByProductType(type);
+    public List<Product> findByType(Long storeId, ProductType type) {
+        Store store = finder.findByStore(storeId);
+        return productRepository.findByProductType(store.getId(), type);
     }
 
-    public List<Product> findBySelling() {
-        return productRepository.findByProductSellingStatusIs(SELLING);
+    public List<Product> findBySelling(Long storeId) {
+        Store store = finder.findByStore(storeId);
+        return productRepository.findByProductSellingStatusIs(store.getId(), SELLING);
     }
 
     @Transactional
-    public void deleteById(Long ownerId, Long productId) {
+    public void deleteById(Long productId) {
         Product product = finder.findByProduct(productId);
-        User owner = finder.findByOwner(ownerId);
+        User owner = finder.findByOwner(product.getOwner().getId());
         validate(product.getStore(), owner);
 
         productRepository.deleteById(productId);
+    }
+
+    public List<Product> findByStoreId(Long storeId) {
+        Store store = finder.findByStore(storeId);
+        return productRepository.findByStore(store);
+    }
+
+    private void validateProductDuplicate(Store store, String name) {
+        productRepository.findByStoreAndName(store, name)
+                .ifPresent(product -> {
+                    throw new ProductException("이미 존재하는 상품입니다.");
+                });
     }
 
     private static void validate(Store store, User owner) {
@@ -99,10 +118,9 @@ public class ProductService {
         }
     }
 
-    private static List<Product> getProductList(Store store, List<ProductCreate> request) {
+    private static List<Product> getProductList(Store store, User owner, List<ProductCreate> request) {
         return request.stream()
-                .map(r -> Product.of(r, store))
+                .map(r -> Product.of(r, store, owner))
                 .toList();
     }
-
 }
