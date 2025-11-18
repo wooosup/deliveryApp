@@ -8,13 +8,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@Table(name = "users")
+@Entity
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username")
+})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity {
 
@@ -29,15 +33,25 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Builder
+    private UserEntity(Long id, String name, String username, String password, String address, UserRole role) {
+        this.id = id;
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.address = address;
+        this.role = role;
+    }
+
     public static UserEntity of(User user) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.id = user.getId();
-        userEntity.name = user.getName();
-        userEntity.username = user.getUsername();
-        userEntity.password = user.getPassword();
-        userEntity.address = user.getAddress();
-        userEntity.role = user.getRole();
-        return userEntity;
+        return UserEntity.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .address(user.getAddress())
+                .role(user.getRole())
+                .build();
     }
 
     public User toDomain() {

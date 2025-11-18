@@ -44,6 +44,7 @@ public class User {
                 .username(username)
                 .password(password)
                 .address(newAddress)
+                .role(role)
                 .build();
     }
 
@@ -56,6 +57,7 @@ public class User {
                 .username(username)
                 .password(newPassword)
                 .address(address)
+                .role(role)
                 .build();
     }
 
@@ -72,6 +74,7 @@ public class User {
                 .username(username)
                 .password(password)
                 .address(address)
+                .role(role)
                 .build();
     }
 
