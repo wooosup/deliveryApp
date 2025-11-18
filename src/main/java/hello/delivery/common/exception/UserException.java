@@ -1,11 +1,11 @@
 package hello.delivery.common.exception;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class UserException extends DeliveryException {
 
     public UserException(String message) {
-        super(message, NOT_FOUND);
+        super(message, BAD_REQUEST);
     }
 
 }
