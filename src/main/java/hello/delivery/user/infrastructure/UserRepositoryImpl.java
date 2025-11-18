@@ -37,4 +37,9 @@ public class UserRepositoryImpl implements UserRepository {
         return userJpaRepository.findByCustomerId(id).map(UserEntity::toDomain);
     }
 
+    @Override
+    public boolean existsByUsername(String username) {
+        return userJpaRepository.existsByUsername(username);
+    }
+
 }

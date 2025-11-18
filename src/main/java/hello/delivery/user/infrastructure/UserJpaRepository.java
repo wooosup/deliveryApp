@@ -14,4 +14,5 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     @Query("select c from UserEntity c where c.role = 'CUSTOMER' and c.id = :customerId")
     Optional<UserEntity> findByCustomerId(Long customerId);
 
+    boolean existsByUsername(String username);
 }

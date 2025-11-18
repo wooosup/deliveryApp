@@ -21,6 +21,7 @@ public class FakeUserRepository implements UserRepository {
                     .username(user.getUsername())
                     .password(user.getPassword())
                     .address(user.getAddress())
+                    .role(user.getRole())
                     .build();
             data.add(newUser);
             return newUser;
@@ -57,5 +58,11 @@ public class FakeUserRepository implements UserRepository {
         return data.stream()
                 .filter(u -> u.getRole().equals("CUSTOMER") && u.getId().equals(id))
                 .findAny();
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return data.stream()
+                .anyMatch(u -> u.getUsername().equals(username));
     }
 }
