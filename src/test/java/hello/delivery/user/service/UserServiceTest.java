@@ -1,6 +1,7 @@
 package hello.delivery.user.service;
 
 import static hello.delivery.user.infrastructure.UserRole.CUSTOMER;
+import static hello.delivery.user.infrastructure.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -27,7 +28,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("사용자는 회원가입을 할 수 있다.")
+    @DisplayName("고객으로 회원가입을 할 수 있다.")
     void signupCustomer() throws Exception {
         // given
         UserCreate userCreate = UserCreate.builder()
@@ -44,6 +45,28 @@ class UserServiceTest {
         assertThat(result.getName()).isEqualTo("김우섭");
         assertThat(result.getUsername()).isEqualTo("wss3325");
         assertThat(result.getAddress()).isEqualTo("대구");
+        assertThat(result.getRole()).isEqualTo(CUSTOMER);
+    }
+
+    @Test
+    @DisplayName("사장으로 회원가입을 할 수 있다.")
+    void signupOwner() throws Exception {
+        // given
+        UserCreate userCreate = UserCreate.builder()
+                .name("김우섭")
+                .username("wss3325")
+                .password("hihihi3454")
+                .address("대구")
+                .build();
+
+        // when
+        User result = userService.signupOwner(userCreate);
+
+        // then
+        assertThat(result.getName()).isEqualTo("김우섭");
+        assertThat(result.getUsername()).isEqualTo("wss3325");
+        assertThat(result.getAddress()).isEqualTo("대구");
+        assertThat(result.getRole()).isEqualTo(OWNER);
     }
 
     @Test
@@ -174,7 +197,6 @@ class UserServiceTest {
                 .username("wss3325")
                 .password("hihihi3454")
                 .address("대구")
-                .role(CUSTOMER)
                 .build();
         User user = userService.signupCustomer(userCreate);
         PasswordUpdate passwordUpdate = PasswordUpdate.builder()

@@ -3,6 +3,7 @@ package hello.delivery.user.service;
 import static hello.delivery.user.infrastructure.UserRole.CUSTOMER;
 import static hello.delivery.user.infrastructure.UserRole.OWNER;
 
+import hello.delivery.common.exception.UserException;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.user.domain.AddressUpdate;
 import hello.delivery.user.domain.Login;
@@ -22,11 +23,13 @@ public class UserService {
     private final UserRepository userRepository;
 
     public User signupCustomer(UserCreate userCreate) {
+        validateUsernameNotExists(userCreate.getUsername());
         User user = User.signup(userCreate, CUSTOMER);
         return userRepository.save(user);
     }
 
     public User signupOwner(UserCreate userCreate) {
+        validateUsernameNotExists(userCreate.getUsername());
         User user = User.signup(userCreate, OWNER);
         return userRepository.save(user);
     }
@@ -58,4 +61,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(UserNotFound::new);
+    }
+
+    private void validateUsernameNotExists(String username) {
+        if (userRepository.existsByUsername(username)) {
+            throw new UserException("이미 존재하는 아이디입니다.");
+        }
+    }
 }
