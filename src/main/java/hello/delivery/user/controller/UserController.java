@@ -11,7 +11,6 @@ import hello.delivery.user.domain.UserCreate;
 import hello.delivery.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,9 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Tag(name = "사용자 (user, owner)")
 @RestController
@@ -57,20 +56,16 @@ public class UserController {
     }
 
     @PatchMapping("/address")
-    @Parameter(in = ParameterIn.HEADER, name = "USERNAME")
     @Operation(summary = "주소 변경", description = "사용자의 주소를 변경합니다.")
-    public ApiResponse<UserResponse> changeAddress(@Parameter(name = "USERNAME", in = ParameterIn.HEADER) @RequestHeader("USERNAME") String username, @Valid @RequestBody AddressUpdate request) {
-        User user = userService.getByUsername(username);
-        user = userService.changeAddress(user.getId(), request);
+    public ApiResponse<UserResponse> changeAddress(@Parameter(hidden = true) @SessionAttribute(name = "userId", required = false) Long userId, @Valid @RequestBody AddressUpdate request) {
+        User user = userService.changeAddress(userId, request);
         return ApiResponse.ok(UserResponse.of(user));
     }
 
     @PatchMapping("/password")
-    @Parameter(in = ParameterIn.HEADER, name = "USERNAME")
     @Operation(summary = "비밀번호 변경", description = "사용자의 비밀번호를 변경합니다.")
-    public ApiResponse<UserResponse> changePassword(@Parameter(name = "USERNAME", in = ParameterIn.HEADER) @RequestHeader("USERNAME") String username, @Valid @RequestBody PasswordUpdate request) {
-        User user = userService.getByUsername(username);
-        user = userService.changePassword(user.getId(), request);
+    public ApiResponse<UserResponse> changePassword(@Parameter(hidden = true) @SessionAttribute(name = "userId", required = false) Long userId, @Valid @RequestBody PasswordUpdate request) {
+        User user = userService.changePassword(userId, request);
         return ApiResponse.ok(UserResponse.of(user));
     }
 
