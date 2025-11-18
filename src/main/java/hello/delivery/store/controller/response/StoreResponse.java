@@ -1,6 +1,5 @@
 package hello.delivery.store.controller.response;
 
-import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.infrastructure.StoreType;
 import hello.delivery.user.controller.response.UserResponse;
@@ -14,19 +13,16 @@ public class StoreResponse {
     private final Long id;
     private final String name;
     private final StoreType storeType;
-    private final Integer totalSales;
+    private final int totalSales;
     private final UserResponse owner;
-    private final List<ProductResponse> products;
 
     @Builder
-    private StoreResponse(Long id, String name, StoreType storeType, Integer totalSales, UserResponse owner,
-                          List<ProductResponse> products) {
+    private StoreResponse(Long id, String name, StoreType storeType, int totalSales, UserResponse owner) {
         this.id = id;
         this.name = name;
         this.storeType = storeType;
         this.totalSales = totalSales;
         this.owner = owner;
-        this.products = products;
     }
 
     public static StoreResponse of(Store store) {
@@ -36,9 +32,6 @@ public class StoreResponse {
                 .storeType(store.getStoreType())
                 .totalSales(store.getTotalSales())
                 .owner(UserResponse.of(store.getOwner()))
-                .products(store.getProducts().stream()
-                        .map(ProductResponse::of)
-                        .toList())
                 .build();
     }
 
