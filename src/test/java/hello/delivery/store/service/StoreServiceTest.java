@@ -2,9 +2,12 @@ package hello.delivery.store.service;
 
 import static hello.delivery.store.infrastructure.StoreType.JAPANESE_FOOD;
 import static hello.delivery.store.infrastructure.StoreType.KOREAN_FOOD;
+import static hello.delivery.user.infrastructure.UserRole.CUSTOMER;
 import static hello.delivery.user.infrastructure.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hello.delivery.common.exception.StoreException;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeStoreRepository;
 import hello.delivery.mock.TestClockHolder;
@@ -34,7 +37,6 @@ class StoreServiceTest {
     void create() throws Exception {
         // given
         User owner = buildOwner();
-        fakeFinder.addOwner(owner);
         StoreCreate storeCreate = StoreCreate.builder()
                 .ownerId(owner.getId())
                 .storeType(KOREAN_FOOD)
@@ -42,13 +44,37 @@ class StoreServiceTest {
                 .build();
 
         // when
-        Store store = storeService.create(owner.getId(), storeCreate);
+        Store store = storeService.create(storeCreate);
 
         // then
         assertThat(store.getName()).isEqualTo("한식당");
         assertThat(store.getStoreType()).isEqualTo(KOREAN_FOOD);
         assertThat(store.getTotalSales()).isZero();
-        assertThat(store.getProducts()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("고객이 가게를 생성하면 예외를 던진다.")
+    void validateCreate() throws Exception {
+        // given
+        User user = User.builder()
+                .id(1L)
+                .name("고객")
+                .username("customer1")
+                .password("password")
+                .address("서울")
+                .role(CUSTOMER)
+                .build();
+        fakeFinder.addOwner(user);
+        StoreCreate storeCreate = StoreCreate.builder()
+                .ownerId(user.getId())
+                .storeType(KOREAN_FOOD)
+                .storeName("한식당")
+                .build();
+
+        // expect
+        assertThatThrownBy(() -> storeService.create(storeCreate))
+                .isInstanceOf(StoreException.class)
+                .hasMessageContaining("가게를 생성할 권한이 없습니다.");
     }
 
     @Test
@@ -67,8 +93,8 @@ class StoreServiceTest {
                 .storeType(JAPANESE_FOOD)
                 .storeName("일식당")
                 .build();
-        storeService.create(owner.getId(), storeCreate1);
-        storeService.create(owner.getId(), storeCreate2);
+        storeService.create(storeCreate1);
+        storeService.create(storeCreate2);
 
         // when
         List<Store> stores = storeService.findByStoreType(KOREAN_FOOD);
@@ -79,8 +105,8 @@ class StoreServiceTest {
         assertThat(stores.get(0).getName()).isEqualTo("한식당");
     }
 
-    private static User buildOwner() {
-        return User.builder()
+    private User buildOwner() {
+        User owner = User.builder()
                 .id(1L)
                 .name("차상훈")
                 .username("wss3325")
@@ -88,6 +114,8 @@ class StoreServiceTest {
                 .address("대구")
                 .role(OWNER)
                 .build();
+        fakeFinder.addOwner(owner);
+        return owner;
     }
 
 }
