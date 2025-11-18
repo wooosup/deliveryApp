@@ -61,11 +61,13 @@ public class FakeFinder implements FinderPort {
     }
 
     @Override
-    public User findByUser(Long id) {
-        User u = users.get(id);
-        if (u == null) {
-            throw new UserNotFound();
+    public User findByUsername(String username) {
+        for (User u : users.values()) {
+            if (u.getUsername().equals(username)) {
+                return u;
+            }
         }
-        return u;
+        throw new UserNotFound();
     }
+
 }

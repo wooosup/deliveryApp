@@ -40,8 +40,8 @@ public class Finder implements FinderPort {
     }
 
     @Override
-    public User findByUser(Long id) {
-        return userRepository.findByCustomerId(id)
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
                 .orElseThrow(UserNotFound::new);
     }
 }

@@ -9,5 +9,5 @@ public interface FinderPort {
     Product findByProduct(Long id);
     Store findByStore(Long id);
     User findByOwner(Long id);
-    User findByUser(Long id);
+    User findByUsername(String username);
 }
