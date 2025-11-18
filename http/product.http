@@ -1,0 +1,56 @@
+### 상품생성
+POST localhost:8080/api/products/new
+Content-Type: application/json
+
+{
+  "storeId" : 1,
+  "ownerId" : 1,
+  "name" : "라멘",
+  "price" : 11100,
+  "type": "FOOD"
+}
+
+### 상품 여러개 생성
+POST localhost:8080/api/products/new/batch
+Content-Type: application/json
+
+[
+  {
+    "storeId" : 1,
+    "ownerId" : 2,
+    "name" : "초밥",
+    "price" : 15000,
+    "type": "FOOD"
+  },
+  {
+    "storeId" : 1,
+    "ownerId" : 2,
+    "name" : "우동",
+    "price" : 9000,
+    "type": "FOOD"
+  }
+]
+
+### 상품 상태변경
+PATCH localhost:8080/api/products/1/status
+Content-Type: application/json
+
+{
+  "status" : "STOP_SELLING"
+}
+
+### 상품 삭제
+DELETE localhost:8080/api/products/1
+Content-Type: application/json
+
+### 가게의 모든 상품 조회
+GET localhost:8080/api/products/store/1
+Content-Type: application/json
+
+### 판매중인 상품 조회
+GET localhost:8080/api/products/store/1/selling
+Content-Type: application/json
+
+### 상품 타입별 조회
+GET localhost:8080/api/products/store/1/type/FOOD
+Content-Type: application/json

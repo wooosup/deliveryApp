@@ -1,0 +1,48 @@
+### 고객 생성
+POST localhost:8080/api/users/signup
+Content-Type: application/json
+
+{
+  "name" : "김우섭",
+  "username" : "krs3454",
+  "password" : "password1234",
+  "address" : "대구"
+}
+
+### 사장 생성
+POST localhost:8080/api/users/owners/signup
+Content-Type: application/json
+
+{
+  "name" : "우섭킴",
+  "username" : "wss3454",
+  "password" : "password1234",
+  "address" : "대구"
+}
+
+### 로그인
+POST localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "username": "wss3454",
+  "password": "password1234"
+}
+
+### 주소 변경
+PATCH localhost:8080/api/users/address
+Content-Type: application/json
+USERNAME: wss3454
+
+{
+  "address" : "서울"
+}
+
+### 비밀번호 변경
+PATCH localhost:8080/api/users/password
+Content-Type: application/json
+USERNAME: wss3454
+
+{
+  "password" : "newpassword1234"
+}

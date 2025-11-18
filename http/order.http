@@ -1,0 +1,20 @@
+### 주문 생성
+POST localhost:8080/api/orders/new
+Content-Type: application/json
+USERNAME: krs3454
+
+{
+  "storeId" : 1,
+  "userId": 1,
+  "orderProducts" : [
+    {
+      "productId" : 1,
+      "quantity" : 2
+    }
+  ]
+}
+
+### 사용자 주문내역 조회
+GET localhost:8080/api/orders/my-orders
+Content-Type: application/json
+USERNAME: krs3454
