@@ -1,5 +1,6 @@
 package hello.delivery.store.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.store.infrastructure.StoreType;
 import jakarta.validation.constraints.NotBlank;
@@ -23,7 +24,11 @@ public class StoreCreate {
     private final List<ProductCreate> products;
 
     @Builder
-    private StoreCreate(long ownerId, String storeName, StoreType storeType, List<ProductCreate> products) {
+    private StoreCreate(
+            @JsonProperty("ownerId") long ownerId,
+            @JsonProperty("storeName") String storeName,
+            @JsonProperty("storeType") StoreType storeType,
+            @JsonProperty("products") List<ProductCreate> products) {
         this.ownerId = ownerId;
         this.storeName = storeName;
         this.storeType = storeType;
