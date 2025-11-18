@@ -38,7 +38,7 @@ class ProductRepositoryTest {
         Product savedProduct = fakeProductRepository.save(product);
 
         // when
-        List<Product> result = fakeProductRepository.findByProductType(FOOD);
+        List<Product> result = fakeProductRepository.findByProductType(store.getId(), FOOD);
 
         // then
         assertThat(result.get(0).getId()).isEqualTo(savedProduct.getId());
@@ -62,7 +62,7 @@ class ProductRepositoryTest {
         Product savedProduct = fakeProductRepository.save(product);
 
         // when
-        List<Product> result = fakeProductRepository.findByProductSellingStatusIs(STOP_SELLING);
+        List<Product> result = fakeProductRepository.findByProductSellingStatusIs(store.getId(), STOP_SELLING);
 
         // then
         assertThat(result.get(0).getId()).isEqualTo(savedProduct.getId());

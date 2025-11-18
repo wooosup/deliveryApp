@@ -3,6 +3,7 @@ package hello.delivery.product.service.port;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.infrastructure.ProductSellingStatus;
 import hello.delivery.product.infrastructure.ProductType;
+import hello.delivery.store.domain.Store;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,11 @@ public interface ProductRepository {
 
     List<Product> findAll();
 
-    List<Product> findByProductType(ProductType type);
+    List<Product> findByProductType(Long id, ProductType type);
 
-    List<Product> findByProductSellingStatusIs(ProductSellingStatus status);
+    List<Product> findByProductSellingStatusIs(Long id, ProductSellingStatus status);
+
+    Optional<Product> findByStoreAndName(Store store, String name);
+
+    List<Product> findByStore(Store store);
 }

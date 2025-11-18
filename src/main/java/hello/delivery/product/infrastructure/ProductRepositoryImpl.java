@@ -3,6 +3,8 @@ package hello.delivery.product.infrastructure;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.service.port.ProductRepository;
+import hello.delivery.store.domain.Store;
+import hello.delivery.store.infrastructure.StoreEntity;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -50,15 +52,29 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product> findByProductType(ProductType type) {
-        return productJpaRepository.findByProductType(type).stream()
+    public List<Product> findByProductType(Long id, ProductType type) {
+        return productJpaRepository.findByStoreIdAndProductType(id, type).stream()
+
                 .map(ProductEntity::toDomain)
                 .toList();
     }
 
     @Override
-    public List<Product> findByProductSellingStatusIs(ProductSellingStatus status) {
-        return productJpaRepository.findByProductSellingStatusIs(status).stream()
+    public List<Product> findByProductSellingStatusIs(Long id, ProductSellingStatus status) {
+        return productJpaRepository.findByStoreIdAndProductSellingStatus(id, status).stream()
+                .map(ProductEntity::toDomain)
+                .toList();
+    }
+
+    @Override
+    public Optional<Product> findByStoreAndName(Store store, String name) {
+        return productJpaRepository.findByStoreAndName(StoreEntity.of(store), name)
+                .map(ProductEntity::toDomain);
+    }
+
+    @Override
+    public List<Product> findByStore(Store store) {
+        return productJpaRepository.findByStore(StoreEntity.of(store)).stream()
                 .map(ProductEntity::toDomain)
                 .toList();
     }
