@@ -29,7 +29,7 @@ class ProductTest {
                 .build();
 
         // when
-        Product product = Product.of(productCreate, store);
+        Product product = Product.of(productCreate, store, owner);
 
         // then
         assertThat(product.getName()).isEqualTo("치킨");
@@ -52,7 +52,7 @@ class ProductTest {
                 .build();
 
         // expect
-        assertThatThrownBy(() -> Product.of(productCreate, store))
+        assertThatThrownBy(() -> Product.of(productCreate, store, owner))
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("상품 가격은 양수여야 합니다.");
     }
@@ -71,7 +71,7 @@ class ProductTest {
                 .build();
 
         // expect
-        assertThatThrownBy(() -> Product.of(productCreate, store))
+        assertThatThrownBy(() -> Product.of(productCreate, store, owner))
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("가게가 일치하지 않습니다.");
     }
@@ -88,40 +88,13 @@ class ProductTest {
                 .price(20000)
                 .type(FOOD)
                 .build();
-        Product product = Product.of(productCreate, store);
+        Product product = Product.of(productCreate, store, owner);
 
         // when
-        Product result = product.changeSellingStatus(owner, STOP_SELLING);
+        Product result = product.changeSellingStatus(STOP_SELLING);
 
         // then
         assertThat(result.getProductSellingStatus()).isEqualTo(STOP_SELLING);
-    }
-
-    @Test
-    @DisplayName("판매 상태 변경에 권한이 없으면 예외를 던진다.")
-    void validateChangeSellingStatus() throws Exception {
-        // given
-        User owner = buildOwner();
-        Store store = buildStore(owner);
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeId(store.getId())
-                .name("치킨")
-                .price(20000)
-                .type(FOOD)
-                .build();
-        Product product = Product.of(productCreate, store);
-
-        User notOwner = User.builder()
-                .id(2L)
-                .name("ㅋㅋ")
-                .password("asdasds12434")
-                .role(OWNER)
-                .build();
-
-        // expect
-        assertThatThrownBy(() -> product.changeSellingStatus(notOwner, STOP_SELLING))
-                .isInstanceOf(ProductException.class)
-                .hasMessageContaining("상품 상태를 변경할 권한이 없습니다.");
     }
 
     private static User buildOwner() {
