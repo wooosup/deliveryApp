@@ -4,6 +4,7 @@ import hello.delivery.product.domain.Product;
 import hello.delivery.product.infrastructure.ProductSellingStatus;
 import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.product.service.port.ProductRepository;
+import hello.delivery.store.domain.Store;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,16 +60,31 @@ public class FakeProductRepository implements ProductRepository {
     }
 
     @Override
-    public List<Product> findByProductType(ProductType type) {
+    public List<Product> findByProductType(Long id, ProductType type) {
         return data.stream()
                 .filter(product -> product.getProductType().equals(type))
                 .toList();
     }
 
     @Override
-    public List<Product> findByProductSellingStatusIs(ProductSellingStatus status) {
+    public List<Product> findByProductSellingStatusIs(Long id, ProductSellingStatus status) {
         return data.stream()
                 .filter(product -> product.getProductSellingStatus().equals(status))
+                .toList();
+    }
+
+    @Override
+    public Optional<Product> findByStoreAndName(Store store, String name) {
+        return data.stream()
+                .filter(product -> product.getStore().getId().equals(store.getId()) &&
+                        product.getName().equals(name))
+                .findAny();
+    }
+
+    @Override
+    public List<Product> findByStore(Store store) {
+        return data.stream()
+                .filter(product -> product.getStore().getId().equals(store.getId()))
                 .toList();
     }
 

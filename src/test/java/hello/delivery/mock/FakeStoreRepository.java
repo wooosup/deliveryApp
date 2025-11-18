@@ -3,6 +3,7 @@ package hello.delivery.mock;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.infrastructure.StoreType;
 import hello.delivery.store.service.port.StoreRepository;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,39 @@ public class FakeStoreRepository implements StoreRepository {
         return data.stream()
                 .filter(store -> store.getStoreType().equals(storeType))
                 .toList();
+    }
+
+    @Override
+    public List<Store> findAll() {
+        return new ArrayList<>(data);
+    }
+
+    @Override
+    public Optional<Store> findByName(String name) {
+        return data.stream()
+                .filter(store -> store.getName().equals(name))
+                .findAny();
+    }
+
+    @Override
+    public void updateSales(Long storeId, int dailySales, int totalSales, LocalDate lastSalesDate) {
+        data.stream()
+                .filter(store -> store.getId().equals(storeId))
+                .findAny()
+                .ifPresent(store -> {
+                    data.remove(store);
+                    Store updatedStore = Store.builder()
+                            .id(store.getId())
+                            .owner(store.getOwner())
+                            .name(store.getName())
+                            .storeType(store.getStoreType())
+                            .dailySales(dailySales)
+                            .totalSales(totalSales)
+                            .openDate(store.getOpenDate())
+                            .lastSalesDate(lastSalesDate)
+                            .build();
+                    data.add(updatedStore);
+                });
     }
 
 }
