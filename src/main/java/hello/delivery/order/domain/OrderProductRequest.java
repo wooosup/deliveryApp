@@ -1,5 +1,6 @@
 package hello.delivery.order.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,7 +11,9 @@ public class OrderProductRequest {
     private final int quantity;
 
     @Builder
-    private OrderProductRequest(long productId, int quantity) {
+    private OrderProductRequest(
+            @JsonProperty("productId") long productId,
+            @JsonProperty("quantity") int quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }

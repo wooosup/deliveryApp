@@ -1,23 +1,24 @@
 package hello.delivery.order.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Getter
-@NoArgsConstructor
 public class OrderCreate {
 
-    private long userId;
-    private long storeId;
-    private List<OrderProductRequest> orderProducts;
+    private final long storeId;
+    private final long userId;
+    private final List<OrderProductRequest> orderProducts;
 
     @Builder
-    private OrderCreate(long userId, long storeId, List<OrderProductRequest> orderProducts) {
-        this.userId = userId;
+    private OrderCreate(
+            @JsonProperty("storeId") long storeId,
+            @JsonProperty("userId") long userId,
+            @JsonProperty("orderProducts") List<OrderProductRequest> orderProducts) {
         this.storeId = storeId;
+        this.userId = userId;
         this.orderProducts = orderProducts;
     }
 
