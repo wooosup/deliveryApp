@@ -1,5 +1,6 @@
 package hello.delivery.store.service;
 
+import hello.delivery.common.exception.StoreNotFound;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.common.service.port.FinderPort;
 import hello.delivery.store.domain.Store;
@@ -22,8 +23,8 @@ public class StoreService {
     private final ClockHolder clockHolder;
 
     @Transactional
-    public Store create(Long ownerId, StoreCreate request) {
-        User owner = finder.findByOwner(ownerId);
+    public Store create(StoreCreate request) {
+        User owner = finder.findByOwner(request.getOwnerId());
         Store store = Store.of(request, owner, clockHolder.now());
 
         return storeRepository.save(store);
@@ -31,6 +32,15 @@ public class StoreService {
 
     public List<Store> findByStoreType(StoreType storeType) {
         return storeRepository.findByStoreType(storeType);
+    }
+
+    public List<Store> findAll() {
+        return storeRepository.findAll();
+    }
+
+    public Store findByName(String name) {
+        return storeRepository.findByName(name)
+                .orElseThrow(StoreNotFound::new);
     }
 
 }
