@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeOrderRepository;
+import hello.delivery.mock.FakeStoreRepository;
 import hello.delivery.mock.TestClockHolder;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderCreate;
@@ -26,9 +27,10 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         FakeOrderRepository fakeOrderRepository = new FakeOrderRepository();
+        FakeStoreRepository fakeStoreRepository = new FakeStoreRepository();
         fakeFinder = new FakeFinder();
         TestClockHolder testClockHolder = new TestClockHolder();
-        orderService = new OrderService(fakeOrderRepository, fakeFinder, testClockHolder);
+        orderService = new OrderService(fakeOrderRepository, fakeStoreRepository, fakeFinder, testClockHolder);
     }
 
     private OrderCreate setUpOrderCreate() {
@@ -41,7 +43,6 @@ class OrderServiceTest {
                 .quantity(2)
                 .build();
         return OrderCreate.builder()
-                .userId(user.getId())
                 .storeId(store.getId())
                 .orderProducts(List.of(orderProduct))
                 .build();
@@ -52,9 +53,10 @@ class OrderServiceTest {
     void order() throws Exception {
         // given
         OrderCreate orderCreate = setUpOrderCreate();
+        String username = "wss3454";
 
         // when
-        Order order = orderService.order(orderCreate);
+        Order order = orderService.order(username, orderCreate);
 
         // then
         assertThat(order.getOrderProducts()).hasSize(1);
@@ -64,14 +66,16 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("사용자 ID로 주문 내역을 조회할 수 있다.")
+    @DisplayName("사용자 아이디로 주문 내역을 조회할 수 있다.")
     void findOrdersByUser() throws Exception {
         // given
         OrderCreate orderCreate = setUpOrderCreate();
-        orderService.order(orderCreate);
+        String username = "wss3454";
+
+        orderService.order(username, orderCreate);
 
         // when
-        List<Order> result = orderService.findOrdersByUserId(orderCreate.getUserId());
+        List<Order> result = orderService.findOrdersByUsername(username);
 
         // then
         assertThat(result).hasSize(1);
