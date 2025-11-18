@@ -13,22 +13,25 @@ public class Product {
 
     private final Long id;
     private final Store store;
+    private final User owner;
     private final String name;
     private final int price;
     private final ProductType productType;
     private final ProductSellingStatus productSellingStatus;
 
     @Builder
-    private Product(Long id, Store store, String name, int price, ProductType productType, ProductSellingStatus productSellingStatus) {
+    private Product(Long id, Store store, User owner, String name, int price, ProductType productType,
+                    ProductSellingStatus productSellingStatus) {
         this.id = id;
         this.store = store;
+        this.owner = owner;
         this.name = name;
         this.price = price;
         this.productType = productType;
         this.productSellingStatus = productSellingStatus;
     }
 
-    public static Product of(ProductCreate productCreate, Store store) {
+    public static Product of(ProductCreate productCreate, Store store, User owner) {
         validate(productCreate, store);
         return Product.builder()
                 .name(productCreate.getName())
@@ -36,6 +39,7 @@ public class Product {
                 .productType(productCreate.getType())
                 .productSellingStatus(ProductSellingStatus.SELLING)
                 .store(store)
+                .owner(owner)
                 .build();
     }
 
@@ -54,11 +58,7 @@ public class Product {
         }
     }
 
-    public Product changeSellingStatus(User owner, ProductSellingStatus status) {
-        if (store.isNotOwner(owner)) {
-            throw new ProductException("상품 상태를 변경할 권한이 없습니다.");
-        }
-
+    public Product changeSellingStatus(ProductSellingStatus status) {
         ProductSellingStatus newStatus = this.productSellingStatus.changeStatus(status);
         return Product.builder()
                 .id(id)
@@ -67,6 +67,7 @@ public class Product {
                 .price(price)
                 .productType(productType)
                 .productSellingStatus(newStatus)
+                .owner(owner)
                 .build();
     }
 
