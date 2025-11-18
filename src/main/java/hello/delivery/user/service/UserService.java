@@ -46,6 +46,7 @@ public class UserService {
     }
 
     public User changeAddress(Long userId, AddressUpdate addressUpdate) {
+        validateLogin(userId);
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
         user = user.changeAddress(addressUpdate.getAddress());
@@ -54,6 +55,7 @@ public class UserService {
     }
 
     public User changePassword(Long userId, PasswordUpdate passwordUpdate) {
+        validateLogin(userId);
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
         user = user.changePassword(passwordUpdate.getPassword());
@@ -61,10 +63,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @Transactional(readOnly = true)
-    public User getByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(UserNotFound::new);
+    private static void validateLogin(Long userId) {
+        if (userId == null) {
+            throw new UserException("로그인이 필요합니다.");
+        }
     }
 
     private void validateUsernameNotExists(String username) {
