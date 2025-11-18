@@ -2,7 +2,6 @@ package hello.delivery.order.controller.response;
 
 import hello.delivery.order.domain.Order;
 import hello.delivery.store.controller.response.StoreResponse;
-import hello.delivery.user.controller.response.UserResponse;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,15 +11,15 @@ public class OrderResponse {
 
     private final Long id;
     private final int totalPrice;
-    private final UserResponse user;
+    private final String address;
     private final StoreResponse store;
     private final List<OrderProductResponse> orderProducts;
 
     @Builder
-    private OrderResponse(Long id, int totalPrice, UserResponse user, StoreResponse store, List<OrderProductResponse> orderProducts) {
+    private OrderResponse(Long id, int totalPrice, String address, StoreResponse store, List<OrderProductResponse> orderProducts) {
         this.id = id;
         this.totalPrice = totalPrice;
-        this.user = user;
+        this.address = address;
         this.store = store;
         this.orderProducts = orderProducts;
     }
@@ -29,7 +28,7 @@ public class OrderResponse {
         return OrderResponse.builder()
                 .id(order.getId())
                 .totalPrice(order.getTotalPrice())
-                .user(UserResponse.of(order.getUser()))
+                .address(order.getUser().getAddress())
                 .store(StoreResponse.of(order.getStore()))
                 .orderProducts(order.getOrderProducts().stream()
                         .map(OrderProductResponse::of)
