@@ -5,7 +5,6 @@ import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.domain.ProductStatusUpdate;
-import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,7 +12,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,28 +54,6 @@ public class ProductController {
     public ApiResponse<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteById(id);
         return ApiResponse.ok(null);
-    }
-
-    @GetMapping("/store/{storeId}")
-    @Operation(summary = "가게별 상품 조회", description = "특정 가게에 속한 모든 상품을 조회합니다.")
-    public ApiResponse<List<ProductResponse>> getProductsByStore(@PathVariable long storeId) {
-        List<Product> products = productService.findByStoreId(storeId);
-        return ApiResponse.ok(ProductResponse.of(products));
-    }
-
-    @GetMapping("/store/{storeId}/selling")
-    @Operation(summary = "가게별 판매 중인 상품 조회", description = "특정 가게에 속한 판매 중인 상품들을 조회합니다.")
-    public ApiResponse<List<ProductResponse>> getSellingProducts(@PathVariable long storeId) {
-        List<Product> products = productService.findBySelling(storeId);
-        return ApiResponse.ok(ProductResponse.of(products));
-    }
-
-    @GetMapping("/store/{storeId}/type/{type}")
-    @Operation(summary = "가게별 상품 타입 조회", description = "특정 가게에 속한 특정 타입의 상품들을 조회합니다.")
-    public ApiResponse<List<ProductResponse>> getProductsByType(@PathVariable long storeId,
-                                                                @PathVariable ProductType type) {
-        List<Product> products = productService.findByType(storeId, type);
-        return ApiResponse.ok(ProductResponse.of(products));
     }
 
 }
