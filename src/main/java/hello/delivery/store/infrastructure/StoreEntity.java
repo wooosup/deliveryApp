@@ -12,12 +12,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,6 +33,7 @@ public class StoreEntity extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
     private UserEntity owner;
 
     private String name;
@@ -49,17 +52,36 @@ public class StoreEntity extends BaseEntity {
 
     private LocalDate lastSalesDate;
 
+    @Builder
+    private StoreEntity(Long id, UserEntity owner, String name, int dailySales, int totalSales, StoreType storeType,
+                       LocalDate openDate, LocalDate lastSalesDate) {
+        this.id = id;
+        this.owner = owner;
+        this.name = name;
+        this.dailySales = dailySales;
+        this.totalSales = totalSales;
+        this.storeType = storeType;
+        this.openDate = openDate;
+        this.lastSalesDate = lastSalesDate;
+    }
+
+    public void updateSales(int dailySales, int totalSales, LocalDate lastSalesDate) {
+        this.dailySales = dailySales;
+        this.totalSales = totalSales;
+        this.lastSalesDate = lastSalesDate;
+    }
+
     public static StoreEntity of(Store store) {
-        StoreEntity storeEntity = new StoreEntity();
-        storeEntity.id = store.getId();
-        storeEntity.owner = UserEntity.of(store.getOwner());
-        storeEntity.name = store.getName();
-        storeEntity.dailySales = store.getDailySales();
-        storeEntity.totalSales = store.getTotalSales();
-        storeEntity.storeType = store.getStoreType();
-        storeEntity.openDate = store.getOpenDate();
-        storeEntity.lastSalesDate = store.getLastSalesDate();
-        return storeEntity;
+        return StoreEntity.builder()
+                .id(store.getId())
+                .owner(UserEntity.of(store.getOwner()))
+                .name(store.getName())
+                .dailySales(store.getDailySales())
+                .totalSales(store.getTotalSales())
+                .storeType(store.getStoreType())
+                .openDate(store.getOpenDate())
+                .lastSalesDate(store.getLastSalesDate())
+                .build();
     }
 
     public Store toDomain() {
@@ -70,12 +92,8 @@ public class StoreEntity extends BaseEntity {
                 .dailySales(dailySales)
                 .totalSales(totalSales)
                 .storeType(storeType)
-                .products(products.stream()
-                        .map(ProductEntity::toDomain)
-                        .toList())
                 .openDate(openDate)
                 .lastSalesDate(lastSalesDate)
                 .build();
     }
-
 }

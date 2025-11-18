@@ -1,14 +1,9 @@
 package hello.delivery.store.domain;
 
-import static java.util.Objects.requireNonNullElseGet;
-
 import hello.delivery.common.exception.StoreException;
-import hello.delivery.product.domain.Product;
 import hello.delivery.store.infrastructure.StoreType;
 import hello.delivery.user.domain.User;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,15 +14,14 @@ public class Store {
     private final User owner;
     private final String name;
     private final StoreType storeType;
-    private final List<Product> products;
     private final int dailySales;
     private final int totalSales;
-    private final LocalDate openDate;
     private final LocalDate lastSalesDate;
+    private final LocalDate openDate;
 
     @Builder
     private Store(Long id, User owner, String name, int dailySales, int totalSales, StoreType storeType,
-                  List<Product> products, LocalDate openDate,
+                  LocalDate openDate,
                   LocalDate lastSalesDate) {
         this.id = id;
         this.owner = owner;
@@ -35,23 +29,19 @@ public class Store {
         this.dailySales = dailySales;
         this.totalSales = totalSales;
         this.storeType = storeType;
-        this.products = requireNonNullElseGet(products, ArrayList::new);
         this.openDate = openDate;
         this.lastSalesDate = lastSalesDate;
     }
 
     public static Store of(StoreCreate storeCreate, User owner, LocalDate currentDate) {
         validate(storeCreate, owner);
-        if (owner.isNotOwner()) {
-            throw new StoreException("가게를 생성할 권한이 없습니다.");
-        }
+        validateOwner(owner);
         return Store.builder()
                 .owner(owner)
                 .name(storeCreate.getStoreName())
                 .storeType(storeCreate.getStoreType())
                 .dailySales(0)
                 .totalSales(0)
-                .products(new ArrayList<>())
                 .openDate(currentDate)
                 .lastSalesDate(null)
                 .build();
@@ -68,15 +58,21 @@ public class Store {
         }
 
         return Store.builder()
+                .id(id)
                 .owner(owner)
                 .name(name)
                 .storeType(storeType)
                 .dailySales(newDailySales)
                 .totalSales(newTotalSales)
-                .products(products)
                 .openDate(openDate)
                 .lastSalesDate(newLastSalesDate)
                 .build();
+    }
+
+    private static void validateOwner(User owner) {
+        if (owner.isNotOwner()) {
+            throw new StoreException("가게를 생성할 권한이 없습니다.");
+        }
     }
 
     private static void validate(StoreCreate storeCreate, User owner) {
@@ -89,10 +85,6 @@ public class Store {
         if (storeCreate.getStoreType() == null) {
             throw new StoreException("가게 타입은 필수 입력 값입니다.");
         }
-    }
-
-    public boolean isNotOwner(User user) {
-        return !this.owner.equals(user);
     }
 
 }
