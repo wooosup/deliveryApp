@@ -9,6 +9,7 @@ import hello.delivery.order.domain.OrderProductRequest;
 import hello.delivery.order.service.port.OrderRepository;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.domain.Store;
+import hello.delivery.store.service.port.StoreRepository;
 import hello.delivery.user.domain.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,23 +22,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final StoreRepository storeRepository;
     private final FinderPort finder;
     private final ClockHolder clockHolder;
 
-    public Order order(OrderCreate request) {
-        User user = finder.findByUser(request.getUserId());
+    public Order order(String username, OrderCreate request) {
+        User user = finder.findByUsername(username);
         Store store = finder.findByStore(request.getStoreId());
 
         List<OrderProduct> orderProducts = createOrderProducts(request.getOrderProducts());
         Order order = Order.order(user, store, orderProducts);
 
-        store.addTotalSales(order.getTotalPrice(), clockHolder.now());
+        Store updatedStore = store.addTotalSales(order.getTotalPrice(), clockHolder.now());
+        repositoryUpdate(store, updatedStore);
+
         return orderRepository.save(order);
     }
 
     @Transactional(readOnly = true)
-    public List<Order> findOrdersByUserId(Long userId) {
-        User user = finder.findByUser(userId);
+    public List<Order> findOrdersByUsername(String username) {
+        User user = finder.findByUsername(username);
         return orderRepository.findOrdersByUserId(user.getId());
     }
 
@@ -52,4 +56,12 @@ public class OrderService {
         return OrderProduct.create(product, request.getQuantity());
     }
 
+    private void repositoryUpdate(Store store, Store updatedStore) {
+        storeRepository.updateSales(
+                store.getId(),
+                updatedStore.getDailySales(),
+                updatedStore.getTotalSales(),
+                updatedStore.getLastSalesDate()
+        );
+    }
 }
