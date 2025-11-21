@@ -16,6 +16,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     private final ProductJpaRepository productJpaRepository;
 
     @Override
+    public Optional<Product> findByProductName(String productName) {
+        return productJpaRepository.findByName(productName).map(ProductEntity::toDomain);
+    }
+
+    @Override
     public Optional<Product> findById(Long id) {
         return productJpaRepository.findById(id).map(ProductEntity::toDomain);
     }

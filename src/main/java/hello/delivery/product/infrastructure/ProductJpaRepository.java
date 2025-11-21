@@ -1,10 +1,9 @@
 package hello.delivery.product.infrastructure;
 
 import hello.delivery.store.infrastructure.StoreEntity;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long> {
 
@@ -15,4 +14,6 @@ public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long>
     Optional<ProductEntity> findByStoreAndName(StoreEntity store, String name);
 
     List<ProductEntity> findByStore(StoreEntity store);
+
+    Optional<ProductEntity> findByName(String name);
 }

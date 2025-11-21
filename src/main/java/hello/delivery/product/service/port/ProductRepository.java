@@ -26,4 +26,6 @@ public interface ProductRepository {
     Optional<Product> findByStoreAndName(Store store, String name);
 
     List<Product> findByStore(Store store);
+
+    Optional<Product> findByProductName(String productName);
 }
