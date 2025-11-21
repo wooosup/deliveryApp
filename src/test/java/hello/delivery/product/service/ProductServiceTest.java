@@ -9,10 +9,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.ProductNotFound;
+import hello.delivery.common.exception.StoreException;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeProductRepository;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
+import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
 import java.util.List;
@@ -25,156 +27,104 @@ class ProductServiceTest {
     private ProductService productService;
     private FakeFinder fakeFinder;
 
+    private static final int ICED_AMERICANO_PRICE = 4000;
+    private static final int CHEESE_CAKE_PRICE = 5500;
+    private static final String STORE_NAME = "투썸";
+    private static final String ICED_AMERICANO = "아아";
+    private static final String CHEESE_CAKE = "치즈케이크";
+
+    private User owner;
+    private Store store;
+
     @BeforeEach
     void setUp() {
         FakeProductRepository fakeProductRepository = new FakeProductRepository();
         fakeFinder = new FakeFinder();
-
         productService = new ProductService(fakeProductRepository, fakeFinder);
+
+        owner = buildOwner();
+        store = buildStore(owner);
     }
 
     @Test
     @DisplayName("가게에 상품을 등록할 수 있다.")
-    void create() throws Exception {
+    void create() {
         // given
-        User owner = buildOwner();
-        Store store = buildStore(owner);
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner.getId())
-                .type(BEVERAGE)
-                .name("아아")
-                .price(4000)
-                .build();
+        ProductCreate productCreate = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
 
         // when
-        Product product = productService.create(productCreate);
+        Product product = productService.create(owner.getId(), productCreate);
 
         // then
-        assertThat(product.getName()).isEqualTo("아아");
-        assertThat(product.getPrice()).isEqualTo(4000);
+        assertThat(product.getName()).isEqualTo(ICED_AMERICANO);
+        assertThat(product.getPrice()).isEqualTo(ICED_AMERICANO_PRICE);
         assertThat(product.getProductType()).isEqualTo(BEVERAGE);
-        assertThat(product.getStore().getName()).isEqualTo("투썸");
+        assertThat(product.getStore().getName()).isEqualTo(STORE_NAME);
         assertThat(product.getStore().getOwner()).isEqualTo(owner);
     }
 
     @Test
     @DisplayName("가게에 여러 상품을 등록할 수 있다.")
-    void creates() throws Exception {
+    void creates() {
         // given
-        User owner = buildOwner();
-        Store store = buildStore(owner);
-        ProductCreate product1 = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner.getId())
-                .type(BEVERAGE)
-                .name("아아")
-                .price(4000)
-                .build();
-        ProductCreate product2 = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner.getId())
-                .type(DESSERT)
-                .name("치즈케이크")
-                .price(5500)
-                .build();
+        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreate product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
 
         // when
-        List<Product> products = productService.creates(List.of(product1, product2));
+        List<Product> products = productService.creates(owner.getId(), List.of(product1, product2));
 
         // then
-        assertThat(products.get(0).getName()).isEqualTo("아아");
-        assertThat(products.get(0).getPrice()).isEqualTo(4000);
-        assertThat(products.get(0).getProductType()).isEqualTo(BEVERAGE);
-        assertThat(products.get(0).getStore().getName()).isEqualTo("투썸");
-        assertThat(products.get(0).getStore().getOwner()).isEqualTo(owner);
+        assertThat(products).hasSize(2);
 
-        assertThat(products.get(1).getName()).isEqualTo("치즈케이크");
-        assertThat(products.get(1).getPrice()).isEqualTo(5500);
+        assertThat(products.get(0).getName()).isEqualTo(ICED_AMERICANO);
+        assertThat(products.get(0).getPrice()).isEqualTo(ICED_AMERICANO_PRICE);
+        assertThat(products.get(0).getProductType()).isEqualTo(BEVERAGE);
+        assertThat(products.get(0).getStore().getName()).isEqualTo(STORE_NAME);
+
+        assertThat(products.get(1).getName()).isEqualTo(CHEESE_CAKE);
+        assertThat(products.get(1).getPrice()).isEqualTo(CHEESE_CAKE_PRICE);
         assertThat(products.get(1).getProductType()).isEqualTo(DESSERT);
-        assertThat(products.get(1).getStore().getName()).isEqualTo("투썸");
-        assertThat(products.get(1).getStore().getOwner()).isEqualTo(owner);
+        assertThat(products.get(1).getStore().getName()).isEqualTo(STORE_NAME);
     }
 
     @Test
     @DisplayName("가게 주인이 아니면 예외를 던진다.")
-    void validateCreate() throws Exception {
+    void validateCreate() {
         // given
-        User owner1 = buildOwner();
-        User owner2 = User.builder()
-                .id(2L)
-                .name("저녁뭐뭑지")
-                .username("흠..")
-                .password("41215153")
-                .address("서울")
-                .role(OWNER)
-                .build();
-        fakeFinder.addOwner(owner2);
-        Store store = buildStore(owner1);
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner2.getId())
-                .type(BEVERAGE)
-                .name("아아")
-                .price(4000)
-                .build();
+        User anotherOwner = buildAnotherOwner();
+        ProductCreate productCreate = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
 
         // expect
-        assertThatThrownBy(() -> productService.create(productCreate))
-                .isInstanceOf(ProductException.class)
-                .hasMessageContaining("권한이 없습니다.");
+        assertThatThrownBy(() -> productService.create(anotherOwner.getId(), productCreate))
+                .isInstanceOf(StoreException.class)
+                .hasMessageContaining("가게 소유자만 접근할 수 있습니다.");
     }
 
     @Test
     @DisplayName("모든 상품이 같은 가게가 아니면 예외를 던진다.")
-    void validateCreates() throws Exception {
+    void validateCreates() {
         // given
-        User owner = buildOwner();
-        Store store = buildStore(owner);
-        ProductCreate product1 = ProductCreate.builder()
-                .storeId(store.getId())
-                .type(BEVERAGE)
-                .name("아아")
-                .price(4000)
-                .build();
-
-        Store fakeStore = Store.builder()
-                .id(2L)
-                .name("스타벅스")
-                .owner(owner)
-                .build();
-        fakeFinder.addStore(fakeStore);
-        ProductCreate product2 = ProductCreate.builder()
-                .storeId(fakeStore.getId())
-                .type(DESSERT)
-                .name("치즈케이크")
-                .price(5500)
-                .build();
+        Store anotherStore = buildAnotherStore();
+        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreate product2 = createProductCreateWithStoreName(anotherStore.getName(), CHEESE_CAKE, DESSERT,
+                CHEESE_CAKE_PRICE);
 
         // expect
-        assertThatThrownBy(() -> productService.creates(List.of(product1, product2)))
+        assertThatThrownBy(() -> productService.creates(owner.getId(), List.of(product1, product2)))
                 .isInstanceOf(ProductException.class)
                 .hasMessageContaining("모든 상품은 동일한 매장에 속해야 합니다.");
     }
 
     @Test
     @DisplayName("상품의 판매 상태를 변경할 수 있다.")
-    void changeSellingStatus() throws Exception {
+    void changeSellingStatus() {
         // given
-        User owner = buildOwner();
-        Store store = buildStore(owner);
-        ProductCreate productCreate = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner.getId())
-                .type(BEVERAGE)
-                .name("아아")
-                .price(4000)
-                .build();
-        Product product = productService.create(productCreate);
+        ProductCreate productCreate = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        Product product = productService.create(owner.getId(), productCreate);
         fakeFinder.addProduct(product);
 
         // when
-        Product result = productService.changeSellingStatus(product.getId(), STOP_SELLING);
+        Product result = productService.changeSellingStatus(product.getId(), owner.getId(), STOP_SELLING);
 
         // then
         assertThat(result.getProductSellingStatus()).isEqualTo(STOP_SELLING);
@@ -182,112 +132,83 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("모든 상품을 조회할 수 있다.")
-    void findAll() throws Exception {
+    void findAll() {
         // given
-        User owner = buildOwner();
-        Store store = buildStore(owner);
-        ProductCreate product1 = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner.getId())
-                .type(BEVERAGE)
-                .name("아아")
-                .price(4000)
-                .build();
-        ProductCreate product2 = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner.getId())
-                .type(DESSERT)
-                .name("치즈케이크")
-                .price(5500)
-                .build();
-        productService.creates(List.of(product1, product2));
+        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreate product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
+        productService.creates(owner.getId(), List.of(product1, product2));
 
         // when
         List<Product> products = productService.findAll();
 
         // then
         assertThat(products).hasSize(2);
-        assertThat(products.get(0).getName()).isEqualTo("아아");
-        assertThat(products.get(1).getName()).isEqualTo("치즈케이크");
+        assertThat(products.get(0).getName()).isEqualTo(ICED_AMERICANO);
+        assertThat(products.get(1).getName()).isEqualTo(CHEESE_CAKE);
     }
 
     @Test
     @DisplayName("상품 타입으로 상품을 조회할 수 있다.")
-    void findByType() throws Exception {
+    void findByType() {
         // given
-        User owner = buildOwner();
-        Store store = buildStore(owner);
-        ProductCreate product1 = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner.getId())
-                .type(BEVERAGE)
-                .name("아아")
-                .price(4000)
-                .build();
-        ProductCreate product2 = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner.getId())
-                .type(DESSERT)
-                .name("치즈케이크")
-                .price(5500)
-                .build();
-        productService.creates(List.of(product1, product2));
+        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreate product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
+        productService.creates(owner.getId(), List.of(product1, product2));
 
         // when
         List<Product> result = productService.findByType(store.getId(), DESSERT);
 
         // then
-        assertThat(result.get(0).getName()).isEqualTo("치즈케이크");
-        assertThat(result.get(0).getStore().getName()).isEqualTo("투썸");
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getName()).isEqualTo(CHEESE_CAKE);
+        assertThat(result.get(0).getStore().getName()).isEqualTo(STORE_NAME);
     }
 
     @Test
     @DisplayName("판매중인 상품을 조회할 수 있다.")
-    void findBySelling() throws Exception {
+    void findBySelling() {
         // given
-        User owner = buildOwner();
-        Store store = buildStore(owner);
-        ProductCreate product1 = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner.getId())
-                .type(BEVERAGE)
-                .name("아아")
-                .price(4000)
-                .build();
-        ProductCreate product2 = ProductCreate.builder()
-                .storeId(store.getId())
-                .ownerId(owner.getId())
-                .type(DESSERT)
-                .name("치즈케이크")
-                .price(5500)
-                .build();
-        List<Product> products = productService.creates(List.of(product1, product2));
+        ProductCreate product1 = createProductCreate(ICED_AMERICANO, BEVERAGE, ICED_AMERICANO_PRICE);
+        ProductCreate product2 = createProductCreate(CHEESE_CAKE, DESSERT, CHEESE_CAKE_PRICE);
+        List<Product> products = productService.creates(owner.getId(), List.of(product1, product2));
+
         fakeFinder.addProduct(products.get(0));
         fakeFinder.addProduct(products.get(1));
 
-        productService.changeSellingStatus(products.get(0).getId(), STOP_SELLING);
+        productService.changeSellingStatus(products.get(0).getId(), owner.getId(), STOP_SELLING);
 
         // when
         List<Product> result = productService.findBySelling(store.getId());
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getName()).isEqualTo("치즈케이크");
+        assertThat(result.get(0).getName()).isEqualTo(CHEESE_CAKE);
     }
-
 
     @Test
     @DisplayName("존재하지 않는 상품의 판매 상태를 변경하려고 하면 예외가 발생한다.")
-    void notFoundProduct() throws Exception {
+    void notFoundProduct() {
         // given
         long productId = 999L;
 
         // expect
-        assertThatThrownBy(() -> productService.changeSellingStatus(productId, STOP_SELLING))
+        assertThatThrownBy(() -> productService.changeSellingStatus(productId, owner.getId(), STOP_SELLING))
                 .isInstanceOf(ProductNotFound.class)
                 .hasMessage("상품을 찾을 수 없습니다.");
     }
 
+    private ProductCreate createProductCreate(String name, ProductType type, int price) {
+        return createProductCreateWithStoreName(STORE_NAME, name, type, price);
+    }
+
+    private ProductCreate createProductCreateWithStoreName(String storeName, String name, ProductType type, int price) {
+        return ProductCreate.builder()
+                .storeName(storeName)
+                .type(type)
+                .name(name)
+                .price(price)
+                .build();
+    }
 
     private User buildOwner() {
         User owner = User.builder()
@@ -298,19 +219,40 @@ class ProductServiceTest {
                 .address("대구")
                 .role(OWNER)
                 .build();
-        fakeFinder.addOwner(owner);
+        fakeFinder.addUser(owner);
         return owner;
+    }
+
+    private User buildAnotherOwner() {
+        User anotherOwner = User.builder()
+                .id(2L)
+                .name("저녁뭐먹지")
+                .username("흠..")
+                .password("41215153")
+                .address("서울")
+                .role(OWNER)
+                .build();
+        fakeFinder.addUser(anotherOwner);
+        return anotherOwner;
     }
 
     private Store buildStore(User owner) {
         Store store = Store.builder()
                 .id(1L)
-                .name("투썸")
+                .name(STORE_NAME)
                 .owner(owner)
                 .build();
         fakeFinder.addStore(store);
         return store;
     }
 
-
+    private Store buildAnotherStore() {
+        Store anotherStore = Store.builder()
+                .id(2L)
+                .name("스타벅스")
+                .owner(owner)
+                .build();
+        fakeFinder.addStore(anotherStore);
+        return anotherStore;
+    }
 }
