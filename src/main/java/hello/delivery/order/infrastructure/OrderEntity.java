@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -37,6 +38,8 @@ public class OrderEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private StoreEntity store;
 
+    private LocalDateTime orderedAt;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderProductEntity> orderProducts = new ArrayList<>();
 
@@ -46,7 +49,7 @@ public class OrderEntity extends BaseEntity {
         orderEntity.totalPrice = order.getTotalPrice();
         orderEntity.user = UserEntity.of(order.getUser());
         orderEntity.store = StoreEntity.of(order.getStore());
-
+        orderEntity.orderedAt = order.getOrderedAt();
         List<OrderProductEntity> children = OrderProductEntity.of(order.getOrderProducts(), orderEntity);
         orderEntity.orderProducts.addAll(children);
         return orderEntity;
@@ -57,6 +60,7 @@ public class OrderEntity extends BaseEntity {
                 .id(id)
                 .user(user.toDomain())
                 .store(store.toDomain())
+                .orderedAt(orderedAt)
                 .orderProducts(orderProducts.stream()
                         .map(OrderProductEntity::toDomain)
                         .toList())
