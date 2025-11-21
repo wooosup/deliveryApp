@@ -1,8 +1,10 @@
 package hello.delivery.order.domain;
 
 import hello.delivery.common.exception.OrderException;
+import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import lombok.Builder;
@@ -15,26 +17,29 @@ public class Order {
     private final int totalPrice;
     private final User user;
     private final Store store;
+    private final LocalDateTime orderedAt;
     private final List<OrderProduct> orderProducts;
 
     @Builder
-    private Order(Long id, User user, Store store, List<OrderProduct> orderProducts) {
+    private Order(Long id, User user, Store store, LocalDateTime orderedAt, List<OrderProduct> orderProducts) {
         this.id = id;
         this.user = user;
         this.store = store;
+        this.orderedAt = orderedAt;
         this.orderProducts = orderProducts.stream()
-                .map(o -> o.withOrder(this))
+                .map(o -> o.getOrder() == null ? o.withOrder(this) : o)
                 .toList();
         this.totalPrice = calculateTotalPrice();
     }
 
-    public static Order order(User user, Store store, List<OrderProduct> orderProducts) {
+    public static Order order(User user, Store store, List<OrderProduct> orderProducts, ClockHolder clockHolder) {
         Objects.requireNonNull(user, "주문하는 사용자는 필수입니다.");
         Objects.requireNonNull(store, "주문하는 가게는 필수입니다.");
         validate(orderProducts);
         return Order.builder()
                 .user(user)
                 .store(store)
+                .orderedAt(clockHolder.nowDateTime())
                 .orderProducts(orderProducts)
                 .build();
     }
