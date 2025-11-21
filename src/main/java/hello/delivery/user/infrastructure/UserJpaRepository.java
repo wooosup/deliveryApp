@@ -8,11 +8,11 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByUsername(String username);
 
-    @Query("select o from UserEntity o where o.role = 'OWNER' and o.id = :ownerId")
-    Optional<UserEntity> findByOwnerId(Long ownerId);
+    @Query("select o from UserEntity o where o.role = 'OWNER' and o.username = :username")
+    Optional<UserEntity> findByOwnerUsername(String username);
 
-    @Query("select c from UserEntity c where c.role = 'CUSTOMER' and c.id = :customerId")
-    Optional<UserEntity> findByCustomerId(Long customerId);
+    @Query("select c from UserEntity c where c.role = 'CUSTOMER' and c.id = :username")
+    Optional<UserEntity> findByCustomerUsername(String username);
 
     boolean existsByUsername(String username);
 }

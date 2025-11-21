@@ -28,13 +28,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByOwnerId(Long id) {
-        return userJpaRepository.findByOwnerId(id).map(UserEntity::toDomain);
+    public Optional<User> findByOwnerUsername(String username) {
+        return userJpaRepository.findByOwnerUsername(username).map(UserEntity::toDomain);
     }
 
     @Override
-    public Optional<User> findByCustomerId(Long id) {
-        return userJpaRepository.findByCustomerId(id).map(UserEntity::toDomain);
+    public Optional<User> findByCustomerUsername(String username) {
+        return userJpaRepository.findByCustomerUsername(username).map(UserEntity::toDomain);
     }
 
     @Override

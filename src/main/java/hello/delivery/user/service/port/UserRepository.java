@@ -11,9 +11,9 @@ public interface UserRepository {
 
     Optional<User> findByUsername(String username);
 
-    Optional<User> findByOwnerId(Long id);
+    Optional<User> findByOwnerUsername(String username);
 
-    Optional<User> findByCustomerId(Long id);
+    Optional<User> findByCustomerUsername(String username);
 
     boolean existsByUsername(String username);
 }
