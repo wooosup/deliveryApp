@@ -12,9 +12,6 @@ import lombok.Getter;
 @Getter
 public class StoreCreate {
 
-    @NotNull(message = "가게 주인은 필수 입력 값입니다.")
-    private final long ownerId;
-
     @NotBlank(message = "가게이름은 필수 입력 값입니다.")
     private final String storeName;
 
@@ -25,11 +22,9 @@ public class StoreCreate {
 
     @Builder
     private StoreCreate(
-            @JsonProperty("ownerId") long ownerId,
             @JsonProperty("storeName") String storeName,
             @JsonProperty("storeType") StoreType storeType,
             @JsonProperty("products") List<ProductCreate> products) {
-        this.ownerId = ownerId;
         this.storeName = storeName;
         this.storeType = storeType;
         this.products = products;
