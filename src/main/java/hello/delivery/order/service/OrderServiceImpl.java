@@ -3,6 +3,7 @@ package hello.delivery.order.service;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.common.service.port.FinderPort;
+import hello.delivery.order.controller.port.OrderService;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderCreate;
 import hello.delivery.order.domain.OrderProduct;
@@ -10,8 +11,8 @@ import hello.delivery.order.domain.OrderProductRequest;
 import hello.delivery.order.service.port.OrderRepository;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.service.port.ProductRepository;
+import hello.delivery.store.controller.port.StoreService;
 import hello.delivery.store.domain.Store;
-import hello.delivery.store.service.StoreService;
 import hello.delivery.user.domain.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class OrderService {
+public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;

@@ -11,6 +11,7 @@ import hello.delivery.common.exception.UserException;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeStoreRepository;
 import hello.delivery.mock.TestClockHolder;
+import hello.delivery.store.controller.port.StoreService;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.infrastructure.StoreType;
@@ -20,7 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class StoreServiceTest {
+class StoreServiceImplTest {
 
     private StoreService storeService;
     private FakeFinder fakeFinder;
@@ -32,7 +33,7 @@ class StoreServiceTest {
         FakeStoreRepository fakeStoreRepository = new FakeStoreRepository();
         fakeFinder = new FakeFinder();
         TestClockHolder testClockHolder = new TestClockHolder();
-        storeService = new StoreService(fakeStoreRepository, fakeFinder, testClockHolder);
+        storeService = new StoreServiceImpl(fakeStoreRepository, fakeFinder, testClockHolder);
 
         owner = buildOwner();
     }

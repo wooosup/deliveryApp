@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import hello.delivery.common.exception.UserException;
 import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.mock.FakeUserRepository;
+import hello.delivery.user.controller.port.UserService;
 import hello.delivery.user.domain.AddressUpdate;
 import hello.delivery.user.domain.Login;
 import hello.delivery.user.domain.PasswordUpdate;
@@ -17,7 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class UserServiceTest {
+class UserServiceImplTest {
 
     private UserService userService;
 
@@ -32,7 +33,7 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         FakeUserRepository fakeUserRepository = new FakeUserRepository();
-        userService = new UserService(fakeUserRepository);
+        userService = new UserServiceImpl(fakeUserRepository);
     }
 
     @Test

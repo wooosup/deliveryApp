@@ -5,6 +5,7 @@ import static hello.delivery.user.infrastructure.UserRole.OWNER;
 
 import hello.delivery.common.exception.UserException;
 import hello.delivery.common.exception.UserNotFound;
+import hello.delivery.user.controller.port.UserService;
 import hello.delivery.user.domain.AddressUpdate;
 import hello.delivery.user.domain.Login;
 import hello.delivery.user.domain.PasswordUpdate;
@@ -18,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 

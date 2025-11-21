@@ -4,6 +4,7 @@ import hello.delivery.common.exception.StoreException;
 import hello.delivery.common.exception.StoreNotFound;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.common.service.port.FinderPort;
+import hello.delivery.store.controller.port.StoreService;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.infrastructure.StoreType;
@@ -17,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class StoreService {
+public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final FinderPort finder;

@@ -9,12 +9,13 @@ import hello.delivery.mock.FakeOrderRepository;
 import hello.delivery.mock.FakeProductRepository;
 import hello.delivery.mock.FakeStoreRepository;
 import hello.delivery.mock.TestClockHolder;
+import hello.delivery.order.controller.port.OrderService;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderCreate;
 import hello.delivery.order.domain.OrderProductRequest;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.domain.Store;
-import hello.delivery.store.service.StoreService;
+import hello.delivery.store.service.StoreServiceImpl;
 import hello.delivery.user.domain.User;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +41,8 @@ class OrderServiceTest {
         fakeFinder = new FakeFinder();
         fakeProductRepository = new FakeProductRepository();
         TestClockHolder testClockHolder = new TestClockHolder();
-        StoreService storeService = new StoreService(new FakeStoreRepository(), fakeFinder, testClockHolder);
-        orderService = new OrderService(fakeOrderRepository, fakeProductRepository, storeService, fakeFinder, testClockHolder);
+        StoreServiceImpl storeService = new StoreServiceImpl(new FakeStoreRepository(), fakeFinder, testClockHolder);
+        orderService = new OrderServiceImpl(fakeOrderRepository, fakeProductRepository, storeService, fakeFinder, testClockHolder);
 
         setUpTestData();
     }

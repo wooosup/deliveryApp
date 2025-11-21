@@ -12,6 +12,7 @@ import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.exception.StoreException;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeProductRepository;
+import hello.delivery.product.controller.port.ProductService;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.infrastructure.ProductType;
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class ProductServiceTest {
+class ProductServiceImplTest {
 
     private ProductService productService;
     private FakeFinder fakeFinder;
@@ -40,7 +41,7 @@ class ProductServiceTest {
     void setUp() {
         FakeProductRepository fakeProductRepository = new FakeProductRepository();
         fakeFinder = new FakeFinder();
-        productService = new ProductService(fakeProductRepository, fakeFinder);
+        productService = new ProductServiceImpl(fakeProductRepository, fakeFinder);
 
         owner = buildOwner();
         store = buildStore(owner);

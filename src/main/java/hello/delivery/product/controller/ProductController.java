@@ -2,12 +2,13 @@ package hello.delivery.product.controller;
 
 import hello.delivery.common.annotation.LoginUser;
 import hello.delivery.common.api.ApiResponse;
+import hello.delivery.product.controller.docs.ProductControllerDocs;
+import hello.delivery.product.controller.port.ProductService;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.domain.ProductStatusUpdate;
 import hello.delivery.product.infrastructure.ProductType;
-import hello.delivery.product.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
