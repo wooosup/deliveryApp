@@ -1,5 +1,8 @@
 package hello.delivery.mock;
 
+import static hello.delivery.user.infrastructure.UserRole.CUSTOMER;
+import static hello.delivery.user.infrastructure.UserRole.OWNER;
+
 import hello.delivery.user.domain.User;
 import hello.delivery.user.service.port.UserRepository;
 import java.util.ArrayList;
@@ -47,16 +50,16 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByOwnerId(Long id) {
+    public Optional<User> findByOwnerUsername(String username) {
         return data.stream()
-                .filter(u -> u.getRole().equals("OWNER") && u.getId().equals(id))
+                .filter(u -> u.getUsername().equals(username) && u.getRole() == OWNER)
                 .findAny();
     }
 
     @Override
-    public Optional<User> findByCustomerId(Long id) {
+    public Optional<User> findByCustomerUsername(String username) {
         return data.stream()
-                .filter(u -> u.getRole().equals("CUSTOMER") && u.getId().equals(id))
+                .filter(u -> u.getUsername().equals(username) && u.getRole() == CUSTOMER)
                 .findAny();
     }
 
@@ -65,4 +68,5 @@ public class FakeUserRepository implements UserRepository {
         return data.stream()
                 .anyMatch(u -> u.getUsername().equals(username));
     }
+
 }

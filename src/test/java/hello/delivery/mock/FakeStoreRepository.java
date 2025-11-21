@@ -3,6 +3,7 @@ package hello.delivery.mock;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.infrastructure.StoreType;
 import hello.delivery.store.service.port.StoreRepository;
+import hello.delivery.user.domain.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,19 @@ public class FakeStoreRepository implements StoreRepository {
                             .build();
                     data.add(updatedStore);
                 });
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return data.stream()
+                .anyMatch(store -> store.getName().equals(name));
+    }
+
+    @Override
+    public List<Store> findByOwner(User owner) {
+        return data.stream()
+                .filter(store -> store.getOwner().equals(owner))
+                .toList();
     }
 
 }

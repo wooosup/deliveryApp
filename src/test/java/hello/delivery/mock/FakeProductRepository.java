@@ -88,4 +88,11 @@ public class FakeProductRepository implements ProductRepository {
                 .toList();
     }
 
+    @Override
+    public Optional<Product> findByProductName(String productName) {
+        return data.stream()
+                .filter(product -> product.getName().equals(productName))
+                .findAny();
+    }
+
 }

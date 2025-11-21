@@ -7,67 +7,52 @@ import hello.delivery.common.service.port.FinderPort;
 import hello.delivery.product.domain.Product;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FakeFinder implements FinderPort {
 
-    private final Map<Long, Product> products = new HashMap<>();
-    private final Map<Long, Store> stores = new HashMap<>();
-    private final Map<Long, User> owners = new HashMap<>();
-    private final Map<Long, User> users = new HashMap<>();
+    private final List<User> users = new ArrayList<>();
+    private final List<Store> stores = new ArrayList<>();
+    private final List<Product> products = new ArrayList<>();
 
-    public void addProduct(Product product) {
-        products.put(product.getId(), product);
+    public void addUser(User user) {
+        users.add(user);
     }
 
     public void addStore(Store store) {
-        stores.put(store.getId(), store);
+        stores.add(store);
     }
 
-    public void addOwner(User owner) {
-        owners.put(owner.getId(), owner);
+    public void addProduct(Product product) {
+        products.add(product);
     }
 
-    public void addUser(User user) {
-        users.put(user.getId(), user);
+    public User findByUser(Long userId) {
+        return users.stream()
+                .filter(user -> user.getId().equals(userId))
+                .findFirst()
+                .orElseThrow(UserNotFound::new);
     }
 
-    @Override
-    public Product findByProduct(Long id) {
-        Product p = products.get(id);
-        if (p == null) {
-            throw new ProductNotFound();
-        }
-        return p;
+    public Store findByStoreName(String storeName) {
+        return stores.stream()
+                .filter(store -> store.getName().equals(storeName))
+                .findFirst()
+                .orElseThrow(StoreNotFound::new);
     }
 
-    @Override
-    public Store findByStore(Long id) {
-        Store s = stores.get(id);
-        if (s == null) {
-            throw new StoreNotFound();
-        }
-        return s;
+    public Store findByStore(Long storeId) {
+        return stores.stream()
+                .filter(store -> store.getId().equals(storeId))
+                .findFirst()
+                .orElseThrow(StoreNotFound::new);
     }
 
-    @Override
-    public User findByOwner(Long id) {
-        User o = owners.get(id);
-        if (o == null) {
-            throw new UserNotFound();
-        }
-        return o;
+    public Product findByProduct(Long productId) {
+        return products.stream()
+                .filter(product -> product.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(ProductNotFound::new);
     }
-
-    @Override
-    public User findByUsername(String username) {
-        for (User u : users.values()) {
-            if (u.getUsername().equals(username)) {
-                return u;
-            }
-        }
-        throw new UserNotFound();
-    }
-
 }
