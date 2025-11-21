@@ -19,13 +19,12 @@ class StoreTest {
         LocalDate now = new TestClockHolder().now();
         User owner = buildOwner();
         StoreCreate storeCreate = StoreCreate.builder()
-                .ownerId(owner.getId())
                 .storeType(KOREAN_FOOD)
                 .storeName("한식당")
                 .build();
 
         // when
-        Store store = Store.of(storeCreate, owner, now);
+        Store store = Store.create(storeCreate, owner, now);
 
         // then
         assertThat(store.getName()).isEqualTo("한식당");
@@ -40,11 +39,10 @@ class StoreTest {
         LocalDate now = new TestClockHolder().now();
         User owner = buildOwner();
         StoreCreate storeCreate = StoreCreate.builder()
-                .ownerId(owner.getId())
                 .storeType(KOREAN_FOOD)
                 .storeName("한식당")
                 .build();
-        Store store = Store.of(storeCreate, owner, now);
+        Store store = Store.create(storeCreate, owner, now);
 
         // when
         Store result = store.addTotalSales(25000, now);
@@ -63,11 +61,10 @@ class StoreTest {
 
         User owner = buildOwner();
         StoreCreate storeCreate = StoreCreate.builder()
-                .ownerId(owner.getId())
                 .storeType(KOREAN_FOOD)
                 .storeName("한식당")
                 .build();
-        Store store = Store.of(storeCreate, owner, yesterday);
+        Store store = Store.create(storeCreate, owner, yesterday);
 
         // when & then
         Store firstSale = store.addTotalSales(10000, yesterday);
