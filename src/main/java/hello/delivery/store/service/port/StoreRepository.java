@@ -2,6 +2,7 @@ package hello.delivery.store.service.port;
 
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.infrastructure.StoreType;
+import hello.delivery.user.domain.User;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -17,5 +18,11 @@ public interface StoreRepository {
     List<Store> findAll();
 
     Optional<Store> findByName(String name);
+
     void updateSales(Long storeId, int dailySales, int totalSales, LocalDate lastSalesDate);
+
+    boolean existsByName(String name);
+
+    List<Store> findByOwner(User owner);
+
 }

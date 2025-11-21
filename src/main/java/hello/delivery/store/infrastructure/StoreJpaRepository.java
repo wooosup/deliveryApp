@@ -1,8 +1,13 @@
 package hello.delivery.store.infrastructure;
 
+import hello.delivery.user.infrastructure.UserEntity;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface StoreJpaRepository extends JpaRepository<StoreEntity, Long> {
 
@@ -10,4 +15,15 @@ public interface StoreJpaRepository extends JpaRepository<StoreEntity, Long> {
 
     Optional<StoreEntity> findByName(String name);
 
+    boolean existsByName(String name);
+
+    @Modifying
+    @Query("update StoreEntity s set s.dailySales = :dailySales, s.totalSales = :totalSales, s.lastSalesDate = :lastSalesDate where s.id = :storeId")
+    void updateSales(@Param("storeId") Long storeId,
+                     @Param("dailySales") int dailySales,
+                     @Param("totalSales") int totalSales,
+                     @Param("lastSalesDate") LocalDate lastSalesDate);
+
+    @Query("select s from StoreEntity s where s.owner = :owner")
+    List<StoreEntity> findByStoresForOwner(UserEntity owner);
 }
