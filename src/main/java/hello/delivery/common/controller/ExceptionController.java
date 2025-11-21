@@ -20,7 +20,7 @@ public class ExceptionController {
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse invalidRequestHandler(MethodArgumentNotValidException e) {
-        log.error("MethodArgumentNotValidException 발생: {}", e.getMessage(), e);
+        log.error("잘못된 요청: {}", e.getMessage());
         ErrorResponse response = ErrorResponse.builder()
                 .code("400")
                 .message("잘못된 요청입니다.")
@@ -35,7 +35,7 @@ public class ExceptionController {
 
     @ExceptionHandler(DeliveryException.class)
     public ResponseEntity<ErrorResponse> deliveryException(DeliveryException e) {
-        log.error("DeliveryException 발생: {}", e.getMessage(), e);
+        log.error("비즈니스 오류: {}", e.getMessage());
         ErrorResponse response = ErrorResponse.builder()
                 .code(String.valueOf(e.getStatus().value()))
                 .message(e.getMessage())
@@ -47,7 +47,7 @@ public class ExceptionController {
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse generalServerError(Exception e) {
-        log.error("알 수 없는 서버 에러 발생", e);
+        log.error("서버 오류: {}", e.getMessage(), e);
         return ErrorResponse.builder()
                 .code("500")
                 .message("서버에 오류가 발생했습니다.")
