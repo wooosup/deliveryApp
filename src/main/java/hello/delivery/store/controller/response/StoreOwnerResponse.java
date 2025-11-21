@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class StoreResponse {
+public class StoreOwnerResponse {
 
     private final Long id;
     private final String name;
@@ -17,7 +17,7 @@ public class StoreResponse {
     private final UserResponse owner;
 
     @Builder
-    private StoreResponse(Long id, String name, StoreType storeType, int totalSales, UserResponse owner) {
+    private StoreOwnerResponse(Long id, String name, StoreType storeType, int totalSales, UserResponse owner) {
         this.id = id;
         this.name = name;
         this.storeType = storeType;
@@ -25,8 +25,8 @@ public class StoreResponse {
         this.owner = owner;
     }
 
-    public static StoreResponse of(Store store) {
-        return StoreResponse.builder()
+    public static StoreOwnerResponse of(Store store) {
+        return StoreOwnerResponse.builder()
                 .id(store.getId())
                 .name(store.getName())
                 .storeType(store.getStoreType())
@@ -35,9 +35,9 @@ public class StoreResponse {
                 .build();
     }
 
-    public static List<StoreResponse> of(List<Store> stores) {
+    public static List<StoreOwnerResponse> of(List<Store> stores) {
         return stores.stream()
-                .map(StoreResponse::of)
+                .map(StoreOwnerResponse::of)
                 .toList();
     }
 
