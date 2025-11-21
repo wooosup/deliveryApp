@@ -3,6 +3,7 @@ package hello.delivery.mock;
 import hello.delivery.common.service.port.ClockHolder;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TestClockHolder implements ClockHolder {
 
@@ -16,5 +17,10 @@ public class TestClockHolder implements ClockHolder {
     @Override
     public LocalDate now() {
         return LocalDate.now(clock);
+    }
+
+    @Override
+    public LocalDateTime nowDateTime() {
+        return LocalDateTime.now(clock);
     }
 }
