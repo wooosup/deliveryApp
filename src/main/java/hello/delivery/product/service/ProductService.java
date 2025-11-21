@@ -25,27 +25,30 @@ public class ProductService {
     private final FinderPort finder;
 
     @Transactional
-    public Product create(ProductCreate request) {
-        Store store = finder.findByStore(request.getStoreId());
-        User owner = finder.findByOwner(request.getOwnerId());
-        validate(store, owner);
+    public Product create(Long userId, ProductCreate request) {
+        User owner = finder.findByUser(userId);
+        owner.validateOwnerRole();
+
+        Store store = finder.findByStoreName(request.getStoreName());
+        store.validateIsOwner(owner);
 
         validateProductDuplicate(store, request.getName());
 
         Product product = Product.of(request, store, owner);
-
         return productRepository.save(product);
     }
 
     @Transactional
-    public List<Product> creates(List<ProductCreate> requests) {
+    public List<Product> creates(Long userId, List<ProductCreate> requests) {
         validateList(requests);
-        Long storeId = requests.get(0).getStoreId();
-        validateSameStore(requests, storeId);
+        String storeName = requests.get(0).getStoreName();
+        validateSameStore(requests, storeName);
 
-        Store store = finder.findByStore(storeId);
-        User owner = finder.findByOwner(requests.get(0).getOwnerId());
-        validate(store, owner);
+        User owner = finder.findByUser(userId);
+        owner.validateOwnerRole();
+        Store store = finder.findByStoreName(storeName);
+        store.validateIsOwner(owner);
+
 
         for (ProductCreate request : requests) {
             validateProductDuplicate(store, request.getName());
@@ -56,12 +59,26 @@ public class ProductService {
     }
 
     @Transactional
-    public Product changeSellingStatus(Long id, ProductSellingStatus status) {
+    public Product changeSellingStatus(Long id, Long userId, ProductSellingStatus status) {
         Product product = finder.findByProduct(id);
+        User owner = finder.findByUser(userId);
+
+        owner.validateOwnerRole();
+        product.validateOwner(owner.getId());
 
         product = product.changeSellingStatus(status);
-        productRepository.save(product);
-        return product;
+        return productRepository.save(product);
+    }
+
+    @Transactional
+    public void deleteById(Long ownerId, Long productId) {
+        Product product = finder.findByProduct(productId);
+        User owner = finder.findByUser(ownerId);
+
+        owner.validateOwnerRole();
+        product.validateOwner(owner.getId());
+
+        productRepository.deleteById(productId);
     }
 
     public List<Product> findAll() {
@@ -78,15 +95,6 @@ public class ProductService {
         return productRepository.findByProductSellingStatusIs(store.getId(), SELLING);
     }
 
-    @Transactional
-    public void deleteById(Long productId) {
-        Product product = finder.findByProduct(productId);
-        User owner = finder.findByOwner(product.getOwner().getId());
-        validate(product.getStore(), owner);
-
-        productRepository.deleteById(productId);
-    }
-
     public List<Product> findByStoreId(Long storeId) {
         Store store = finder.findByStore(storeId);
         return productRepository.findByStore(store);
@@ -99,20 +107,14 @@ public class ProductService {
                 });
     }
 
-    private static void validate(Store store, User owner) {
-        if (!store.getOwner().getId().equals(owner.getId())) {
-            throw new ProductException("권한이 없습니다.");
-        }
-    }
-
     private static void validateList(List<ProductCreate> requests) {
         if (requests == null || requests.isEmpty()) {
             throw new ProductException("상품 목록이 비어 있습니다.");
         }
     }
 
-    private static void validateSameStore(List<ProductCreate> requests, Long storeId) {
-        boolean sameStore = requests.stream().allMatch(r -> storeId.equals(r.getStoreId()));
+    private static void validateSameStore(List<ProductCreate> requests, String storeName) {
+        boolean sameStore = requests.stream().allMatch(r -> storeName.equals(r.getStoreName()));
         if (!sameStore) {
             throw new ProductException("모든 상품은 동일한 매장에 속해야 합니다.");
         }
