@@ -22,7 +22,7 @@ class ProductTest {
         User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
-                .storeId(store.getId())
+                .storeName(store.getName())
                 .name("치킨")
                 .price(20000)
                 .type(FOOD)
@@ -45,7 +45,7 @@ class ProductTest {
         User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
-                .storeId(store.getId())
+                .storeName(store.getName())
                 .name("치킨")
                 .price(0)
                 .type(FOOD)
@@ -64,7 +64,7 @@ class ProductTest {
         User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
-                .storeId(2L)
+                .storeName("ㅋㅋ")
                 .name("치킨")
                 .price(20000)
                 .type(FOOD)
@@ -83,7 +83,7 @@ class ProductTest {
         User owner = buildOwner();
         Store store = buildStore(owner);
         ProductCreate productCreate = ProductCreate.builder()
-                .storeId(store.getId())
+                .storeName(store.getName())
                 .name("치킨")
                 .price(20000)
                 .type(FOOD)
