@@ -3,10 +3,13 @@ POST localhost:8080/api/stores/new
 Content-Type: application/json
 
 {
-  "ownerId" : 2,
   "storeName" : "라멘다이스키보이즈",
   "storeType" : "JAPANESE_FOOD"
 }
+
+### 자신의 가게 조회
+GET localhost:8080/api/stores/owner
+Content-Type: application/json
 
 ### 타입별 가게 조회
 GET localhost:8080/api/stores/type/JAPANESE_FOOD
@@ -18,4 +21,16 @@ Content-Type: application/json
 
 ### 가게 이름으로 가게 조회
 GET localhost:8080/api/stores/search?name=라멘다이스키보이즈
+Content-Type: application/json
+
+### 가게의 모든 상품 조회
+GET localhost:8080/api/stores/1
+Content-Type: application/json
+
+### 판매중인 상품 조회
+GET localhost:8080/api/stores/1/selling
+Content-Type: application/json
+
+### 상품 타입별 조회
+GET localhost:8080/api/stores/1/type/FOOD
 Content-Type: application/json

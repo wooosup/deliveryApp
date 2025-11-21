@@ -1,14 +1,12 @@
 ### 주문 생성
 POST localhost:8080/api/orders/new
 Content-Type: application/json
-USERNAME: krs3454
 
 {
-  "storeId" : 1,
-  "userId": 1,
+  "storeName" : "라멘다이스키보이즈",
   "orderProducts" : [
     {
-      "productId" : 1,
+      "productName" : "우동",
       "quantity" : 2
     }
   ]
@@ -17,4 +15,3 @@ USERNAME: krs3454
 ### 사용자 주문내역 조회
 GET localhost:8080/api/orders/my-orders
 Content-Type: application/json
-USERNAME: krs3454

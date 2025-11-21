@@ -3,8 +3,7 @@ POST localhost:8080/api/products/new
 Content-Type: application/json
 
 {
-  "storeId" : 1,
-  "ownerId" : 1,
+  "storeName" : "라멘다이스키보이즈",
   "name" : "라멘",
   "price" : 11100,
   "type": "FOOD"
@@ -16,15 +15,13 @@ Content-Type: application/json
 
 [
   {
-    "storeId" : 1,
-    "ownerId" : 2,
+    "storeName" : "라멘다이스키보이즈",
     "name" : "초밥",
     "price" : 15000,
     "type": "FOOD"
   },
   {
-    "storeId" : 1,
-    "ownerId" : 2,
+    "storeName" : "라멘다이스키보이즈",
     "name" : "우동",
     "price" : 9000,
     "type": "FOOD"
@@ -41,16 +38,4 @@ Content-Type: application/json
 
 ### 상품 삭제
 DELETE localhost:8080/api/products/1
-Content-Type: application/json
-
-### 가게의 모든 상품 조회
-GET localhost:8080/api/products/store/1
-Content-Type: application/json
-
-### 판매중인 상품 조회
-GET localhost:8080/api/products/store/1/selling
-Content-Type: application/json
-
-### 상품 타입별 조회
-GET localhost:8080/api/products/store/1/type/FOOD
 Content-Type: application/json

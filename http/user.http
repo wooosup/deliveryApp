@@ -20,7 +20,7 @@ Content-Type: application/json
   "address" : "대구"
 }
 
-### 로그인
+### 사장 로그인
 POST localhost:8080/api/users/login
 Content-Type: application/json
 
@@ -29,10 +29,18 @@ Content-Type: application/json
   "password": "password1234"
 }
 
+### 고객 로그인
+POST localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "username": "krs3454",
+  "password": "password1234"
+}
+
 ### 주소 변경
 PATCH localhost:8080/api/users/address
 Content-Type: application/json
-USERNAME: wss3454
 
 {
   "address" : "서울"
@@ -41,7 +49,6 @@ USERNAME: wss3454
 ### 비밀번호 변경
 PATCH localhost:8080/api/users/password
 Content-Type: application/json
-USERNAME: wss3454
 
 {
   "password" : "newpassword1234"
