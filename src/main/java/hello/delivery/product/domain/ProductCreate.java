@@ -11,11 +11,8 @@ import lombok.Getter;
 @Getter
 public class ProductCreate {
 
-    @NotNull(message = "가게 아이디는 필수 입력 값입니다.")
-    private final long storeId;
-
-    @NotNull(message = "소유자 아이디는 필수 입력 값입니다.")
-    private final long ownerId;
+    @NotBlank(message = "가게 이름은 필수 입력 값입니다.")
+    private final String storeName;
 
     @NotBlank(message = "상품 이름은 필수 입력 값입니다.")
     private final String name;
@@ -29,13 +26,11 @@ public class ProductCreate {
 
     @Builder
     private ProductCreate(
-            @JsonProperty("storeId") long storeId,
-            @JsonProperty("ownerId") long ownerId,
+            @JsonProperty("storeName") String storeName,
             @JsonProperty("name") String name,
             @JsonProperty("price") int price,
             @JsonProperty("type") ProductType type) {
-        this.storeId = storeId;
-        this.ownerId = ownerId;
+        this.storeName = storeName;
         this.name = name;
         this.price = price;
         this.type = type;
