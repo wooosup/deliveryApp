@@ -1,5 +1,5 @@
 
-package hello.delivery.product.controller;
+package hello.delivery.product.controller.docs;
 
 import hello.delivery.common.annotation.LoginUser;
 import hello.delivery.common.api.ApiResponse;

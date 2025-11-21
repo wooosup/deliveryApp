@@ -1,4 +1,4 @@
-package hello.delivery.order.controller;
+package hello.delivery.order.controller.docs;
 
 import hello.delivery.common.annotation.LoginUser;
 import hello.delivery.common.api.ApiResponse;
