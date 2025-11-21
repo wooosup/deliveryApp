@@ -33,9 +33,8 @@ public class Store {
         this.lastSalesDate = lastSalesDate;
     }
 
-    public static Store of(StoreCreate storeCreate, User owner, LocalDate currentDate) {
+    public static Store create(StoreCreate storeCreate, User owner, LocalDate currentDate) {
         validate(storeCreate, owner);
-        validateOwner(owner);
         return Store.builder()
                 .owner(owner)
                 .name(storeCreate.getStoreName())
@@ -69,9 +68,9 @@ public class Store {
                 .build();
     }
 
-    private static void validateOwner(User owner) {
-        if (owner.isNotOwner()) {
-            throw new StoreException("가게를 생성할 권한이 없습니다.");
+    public void validateIsOwner(User user) {
+        if (!this.owner.getId().equals(user.getId())) {
+            throw new StoreException("가게 소유자만 접근할 수 있습니다.");
         }
     }
 
@@ -85,6 +84,7 @@ public class Store {
         if (storeCreate.getStoreType() == null) {
             throw new StoreException("가게 타입은 필수 입력 값입니다.");
         }
+        owner.validateOwnerRole();
     }
 
 }
