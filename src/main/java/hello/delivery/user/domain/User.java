@@ -78,7 +78,17 @@ public class User {
                 .build();
     }
 
-    public boolean isNotOwner() {
+    public boolean isNotOwner(Long anotherId) {
+        return !this.id.equals(anotherId);
+    }
+
+    public void validateOwnerRole() {
+        if (isNotRoleOfOwner()) {
+            throw new UserException("권한이 없습니다.");
+        }
+    }
+
+    private boolean isNotRoleOfOwner() {
         return this.role != UserRole.OWNER;
     }
 
