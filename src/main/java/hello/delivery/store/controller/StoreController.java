@@ -1,17 +1,17 @@
 package hello.delivery.store.controller;
 
+import hello.delivery.common.annotation.LoginUser;
 import hello.delivery.common.api.ApiResponse;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.product.service.ProductService;
-import hello.delivery.store.controller.response.StoreResponse;
+import hello.delivery.store.controller.response.StoreCustomerResponse;
+import hello.delivery.store.controller.response.StoreOwnerResponse;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
 import hello.delivery.store.infrastructure.StoreType;
 import hello.delivery.store.service.StoreService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,60 +23,67 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "가게")
 @RestController
 @RequestMapping("/api/stores")
 @RequiredArgsConstructor
-public class StoreController {
+public class StoreController implements StoreControllerDocs {
 
     private final StoreService storeService;
     private final ProductService productService;
 
+    @Override
     @PostMapping("/new")
-    @Operation(summary = "가게 등록", description = "새로운 가게를 등록합니다.")
-    public ApiResponse<StoreResponse> createStore(@Valid @RequestBody StoreCreate request) {
-        Store store = storeService.create(request);
-        return ApiResponse.ok(StoreResponse.of(store));
+    public ApiResponse<StoreOwnerResponse> createStore(@LoginUser Long userId,
+                                                       @Valid @RequestBody StoreCreate request) {
+        Store store = storeService.create(userId, request);
+        return ApiResponse.ok(StoreOwnerResponse.of(store));
     }
 
+    @Override
     @GetMapping("/type/{type}")
-    @Operation(summary = "가게 타입별 조회", description = "가게 타입에 해당하는 가게들을 조회합니다.")
-    public ApiResponse<List<StoreResponse>> getStoresByType(@PathVariable StoreType type) {
+    public ApiResponse<List<StoreCustomerResponse>> getStoresByType(@PathVariable StoreType type) {
         List<Store> stores = storeService.findByStoreType(type);
-        return ApiResponse.ok(StoreResponse.of(stores));
+        return ApiResponse.ok(StoreCustomerResponse.of(stores));
     }
 
+    @Override
+    @GetMapping("/owner")
+    public ApiResponse<List<StoreOwnerResponse>> getMyStores(@LoginUser Long userId) {
+        List<Store> stores = storeService.findByOwnerId(userId);
+        return ApiResponse.ok(StoreOwnerResponse.of(stores));
+    }
+
+    @Override
     @GetMapping("/all")
-    @Operation(summary = "전체 가게 조회", description = "등록된 모든 가게들을 조회합니다.")
-    public ApiResponse<List<StoreResponse>> findAll() {
+    public ApiResponse<List<StoreCustomerResponse>> findAll() {
         List<Store> stores = storeService.findAll();
-        return ApiResponse.ok(StoreResponse.of(stores));
+        return ApiResponse.ok(StoreCustomerResponse.of(stores));
     }
 
+    @Override
     @GetMapping("/search")
-    @Operation(summary = "가게 이름별 조회", description = "가게 이름에 해당하는 가게를 조회합니다.")
-    public ApiResponse<StoreResponse> searchByName(@RequestParam String name) {
+    public ApiResponse<StoreCustomerResponse> searchByName(@RequestParam String name) {
         Store store = storeService.findByName(name);
-        return ApiResponse.ok(StoreResponse.of(store));
+        return ApiResponse.ok(StoreCustomerResponse.of(store));
     }
 
+    @Override
     @GetMapping("/{storeId}")
-    @Operation(summary = "가게별 상품 조회", description = "특정 가게에 속한 모든 상품을 조회합니다.")
-    public ApiResponse<List<ProductResponse>> getProductsByStore(@PathVariable long storeId) {
+    public ApiResponse<List<ProductResponse>> getProductsByStore(@PathVariable Long storeId) {
         List<Product> products = productService.findByStoreId(storeId);
         return ApiResponse.ok(ProductResponse.of(products));
     }
 
+    @Override
     @GetMapping("/{storeId}/selling")
-    @Operation(summary = "가게별 판매 중인 상품 조회", description = "특정 가게에 속한 판매 중인 상품들을 조회합니다.")
-    public ApiResponse<List<ProductResponse>> getSellingProducts(@PathVariable long storeId) {
+    public ApiResponse<List<ProductResponse>> getSellingProducts(@PathVariable Long storeId) {
         List<Product> products = productService.findBySelling(storeId);
         return ApiResponse.ok(ProductResponse.of(products));
     }
 
+    @Override
     @GetMapping("/{storeId}/type/{type}")
-    @Operation(summary = "가게별 상품 타입 조회", description = "특정 가게에 속한 특정 타입의 상품들을 조회합니다.")
-    public ApiResponse<List<ProductResponse>> getProductsByType(@PathVariable long storeId,
+    public ApiResponse<List<ProductResponse>> getProductsByType(@PathVariable Long storeId,
                                                                 @PathVariable ProductType type) {
         List<Product> products = productService.findByType(storeId, type);
         return ApiResponse.ok(ProductResponse.of(products));
