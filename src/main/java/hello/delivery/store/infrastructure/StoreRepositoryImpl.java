@@ -1,8 +1,9 @@
 package hello.delivery.store.infrastructure;
 
-import hello.delivery.common.exception.StoreNotFound;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.service.port.StoreRepository;
+import hello.delivery.user.domain.User;
+import hello.delivery.user.infrastructure.UserEntity;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -48,9 +49,19 @@ public class StoreRepositoryImpl implements StoreRepository {
 
     @Override
     public void updateSales(Long storeId, int dailySales, int totalSales, LocalDate lastSalesDate) {
-        StoreEntity storeEntity = storeJpaRepository.findById(storeId)
-                .orElseThrow(StoreNotFound::new);
-
-        storeEntity.updateSales(dailySales, totalSales, lastSalesDate);
+        storeJpaRepository.updateSales(storeId, dailySales, totalSales, lastSalesDate);
     }
+
+    @Override
+    public boolean existsByName(String name) {
+        return storeJpaRepository.existsByName(name);
+    }
+
+    @Override
+    public List<Store> findByOwner(User owner) {
+        return storeJpaRepository.findByStoresForOwner(UserEntity.of(owner)).stream()
+                .map(StoreEntity::toDomain)
+                .toList();
+    }
+
 }
