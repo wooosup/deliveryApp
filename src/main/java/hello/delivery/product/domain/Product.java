@@ -1,6 +1,7 @@
 package hello.delivery.product.domain;
 
 import hello.delivery.common.exception.ProductException;
+import hello.delivery.common.exception.StoreException;
 import hello.delivery.product.infrastructure.ProductSellingStatus;
 import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.store.domain.Store;
@@ -43,18 +44,9 @@ public class Product {
                 .build();
     }
 
-    private static void validate(ProductCreate productCreate, Store store) {
-        if (productCreate.getName() == null || productCreate.getName().isBlank()) {
-            throw new ProductException("상품 이름은 필수 입력 값입니다.");
-        }
-        if (productCreate.getPrice() <= 0) {
-            throw new ProductException("상품 가격은 양수여야 합니다.");
-        }
-        if (productCreate.getType() == null) {
-            throw new ProductException("상품 타입은 필수 입력 값입니다.");
-        }
-        if (!store.getId().equals(productCreate.getStoreId())) {
-            throw new ProductException("가게가 일치하지 않습니다.");
+    public void validateOwner(Long ownerId) {
+        if (this.store.getOwner().isNotOwner(ownerId)) {
+            throw new StoreException("가게 소유자만 접근할 수 있습니다.");
         }
     }
 
@@ -69,6 +61,22 @@ public class Product {
                 .productSellingStatus(newStatus)
                 .owner(owner)
                 .build();
+
+    }
+
+    private static void validate(ProductCreate productCreate, Store store) {
+        if (productCreate.getName() == null || productCreate.getName().isBlank()) {
+            throw new ProductException("상품 이름은 필수 입력 값입니다.");
+        }
+        if (productCreate.getPrice() <= 0) {
+            throw new ProductException("상품 가격은 양수여야 합니다.");
+        }
+        if (productCreate.getType() == null) {
+            throw new ProductException("상품 타입은 필수 입력 값입니다.");
+        }
+        if (!store.getName().equals(productCreate.getStoreName())) {
+            throw new ProductException("가게가 일치하지 않습니다.");
+        }
     }
 
 }
