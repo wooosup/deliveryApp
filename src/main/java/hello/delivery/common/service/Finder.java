@@ -7,7 +7,6 @@ import hello.delivery.common.exception.UserNotFound;
 import hello.delivery.common.service.port.FinderPort;
 import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.delivery.service.port.DeliveryRepository;
-import hello.delivery.order.service.port.OrderRepository;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.service.port.ProductRepository;
 import hello.delivery.store.domain.Store;
@@ -24,7 +23,6 @@ public class Finder implements FinderPort {
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
-    private final OrderRepository orderRepository;
     private final DeliveryRepository deliveryRepository;
 
     @Override
