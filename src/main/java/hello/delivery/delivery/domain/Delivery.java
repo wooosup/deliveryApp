@@ -1,8 +1,9 @@
 package hello.delivery.delivery.domain;
 
-import static hello.delivery.delivery.domain.DeliveryStatus.PENDING;
+import static hello.delivery.delivery.domain.DeliveryStatus.*;
 
 import hello.delivery.common.exception.DeliveryException;
+import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.order.domain.Order;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -29,21 +30,50 @@ public class Delivery {
         this.completedAt = completedAt;
     }
 
-    public static Delivery create(Order order, DeliveryAddress address) {
-        validate(order, address);
+    public static Delivery create(Order order) {
+        validate(order);
         return Delivery.builder()
                 .order(order)
                 .status(PENDING)
-                .address(address)
+                .address(order.getAddress())
                 .build();
     }
 
-    private static void validate(Order order, DeliveryAddress address) {
+    public Delivery start(ClockHolder clockHolder) {
+        if (status != ASSIGNED) {
+            throw new DeliveryException("배달을 시작할 수 없는 상태입니다.");
+        }
+        return Delivery.builder()
+                .id(id)
+                .order(order)
+                .status(PICKED_UP)
+                .address(address)
+                .startedAt(clockHolder.nowDateTime())
+                .completedAt(completedAt)
+                .build();
+    }
+
+    public Delivery complete(ClockHolder clockHolder) {
+        if (status != PICKED_UP) {
+            throw new DeliveryException("배달을 완료할 수 없는 상태입니다.");
+        }
+        return Delivery.builder()
+                .id(id)
+                .order(order)
+                .status(DELIVERED)
+                .address(address)
+                .startedAt(startedAt)
+                .completedAt(clockHolder.nowDateTime())
+                .build();
+    }
+
+    private static void validate(Order order) {
         if (order == null) {
             throw new DeliveryException("배달에 필요한 주문 정보가 없습니다.");
         }
-        if (address == null || address.getAddress() == null || address.getAddress().isBlank()) {
-            throw new DeliveryException("배달지 주소는 필수입니다.");
+        if (order.getAddress() == null) {
+            throw new DeliveryException("배달에 필요한 주소 정보가 없습니다.");
         }
     }
+
 }

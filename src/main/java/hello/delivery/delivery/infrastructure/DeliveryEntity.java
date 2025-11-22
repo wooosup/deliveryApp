@@ -1,5 +1,6 @@
 package hello.delivery.delivery.infrastructure;
 
+import hello.delivery.common.infrastructure.BaseEntity;
 import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.delivery.domain.DeliveryAddress;
 import hello.delivery.delivery.domain.DeliveryStatus;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DeliveryEntity {
+public class DeliveryEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +49,7 @@ public class DeliveryEntity {
 
     @Builder
     private DeliveryEntity(Long id, OrderEntity order, DeliveryStatus status, DeliveryAddress address,
-                          LocalDateTime startedAt, LocalDateTime completedAt) {
+                           LocalDateTime startedAt, LocalDateTime completedAt) {
         this.id = id;
         this.order = order;
         this.status = status;
@@ -79,4 +80,4 @@ public class DeliveryEntity {
                 .build();
     }
 }
-}
+
