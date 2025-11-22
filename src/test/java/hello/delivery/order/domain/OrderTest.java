@@ -27,7 +27,7 @@ class OrderTest {
         OrderProduct orderProduct = OrderProduct.create(product, 2);
 
         // when
-        Order order = Order.order(user, store, List.of(orderProduct), new TestClockHolder());
+        Order order = Order.order(user, store, List.of(orderProduct), "주소", new TestClockHolder());
 
         // then
         assertThat(order.getUser()).isEqualTo(user);
@@ -45,8 +45,8 @@ class OrderTest {
         Product product = buildProduct(store);
         OrderProduct orderProduct = OrderProduct.create(product, 2);
         // expect
-        assertThatThrownBy(() -> Order.order(null, store, List.of(orderProduct), new TestClockHolder()))
-                .isInstanceOf(NullPointerException.class)
+        assertThatThrownBy(() -> Order.order(null, store, List.of(orderProduct), "주소", new TestClockHolder()))
+                .isInstanceOf(OrderException.class)
                 .hasMessageContaining("주문하는 사용자는 필수입니다.");
     }
 
@@ -61,8 +61,8 @@ class OrderTest {
         OrderProduct orderProduct = OrderProduct.create(product, 2);
 
         // expect
-        assertThatThrownBy(() -> Order.order(user, null, List.of(orderProduct), new TestClockHolder()))
-                .isInstanceOf(NullPointerException.class)
+        assertThatThrownBy(() -> Order.order(user, null, List.of(orderProduct), "주소", new TestClockHolder()))
+                .isInstanceOf(OrderException.class)
                 .hasMessageContaining("주문하는 가게는 필수입니다.");
     }
 
@@ -75,7 +75,7 @@ class OrderTest {
         Store store = buildStore(owner);
 
         // expect
-        assertThatThrownBy(() -> Order.order(user, store, null, new TestClockHolder()))
+        assertThatThrownBy(() -> Order.order(user, store, null, "주소", new TestClockHolder()))
                 .isInstanceOf(OrderException.class)
                 .hasMessageContaining("주문에는 최소 1개 이상의 상품이 포함되어야 합니다.");
     }
