@@ -3,6 +3,7 @@ package hello.delivery.order.service;
 import hello.delivery.common.exception.ProductNotFound;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.common.service.port.FinderPort;
+import hello.delivery.delivery.controller.port.DeliveryService;
 import hello.delivery.order.controller.port.OrderService;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderCreate;
@@ -27,6 +28,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final StoreService storeService;
+    private final DeliveryService deliveryService;
     private final FinderPort finder;
     private final ClockHolder clockHolder;
 
@@ -35,11 +37,14 @@ public class OrderServiceImpl implements OrderService {
         Store store = finder.findByStoreName(request.getStoreName());
 
         List<OrderProduct> orderProducts = createOrderProducts(store, request.getOrderProducts());
-        Order order = Order.order(user, store, orderProducts, clockHolder);
+        Order order = Order.order(user, store, orderProducts, request.getAddress(), clockHolder);
 
         storeService.addTotalSales(store.getId(), order.getTotalPrice());
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        deliveryService.createDeliveryForOrder(savedOrder);
+
+        return savedOrder;
     }
 
     @Transactional(readOnly = true)
