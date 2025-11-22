@@ -2,11 +2,11 @@ package hello.delivery.order.domain;
 
 import hello.delivery.common.exception.OrderException;
 import hello.delivery.common.service.port.ClockHolder;
+import hello.delivery.delivery.domain.DeliveryAddress;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,14 +17,16 @@ public class Order {
     private final int totalPrice;
     private final User user;
     private final Store store;
+    private final DeliveryAddress address;
     private final LocalDateTime orderedAt;
     private final List<OrderProduct> orderProducts;
 
     @Builder
-    private Order(Long id, User user, Store store, LocalDateTime orderedAt, List<OrderProduct> orderProducts) {
+    private Order(Long id, User user, Store store, DeliveryAddress address, LocalDateTime orderedAt, List<OrderProduct> orderProducts) {
         this.id = id;
         this.user = user;
         this.store = store;
+        this.address = address;
         this.orderedAt = orderedAt;
         this.orderProducts = orderProducts.stream()
                 .map(o -> o.getOrder() == null ? o.withOrder(this) : o)
@@ -32,16 +34,28 @@ public class Order {
         this.totalPrice = calculateTotalPrice();
     }
 
-    public static Order order(User user, Store store, List<OrderProduct> orderProducts, ClockHolder clockHolder) {
-        Objects.requireNonNull(user, "주문하는 사용자는 필수입니다.");
-        Objects.requireNonNull(store, "주문하는 가게는 필수입니다.");
+    public static Order order(User user, Store store, List<OrderProduct> orderProducts, String address, ClockHolder clockHolder) {
+        validateUserAndStore(user, store);
         validate(orderProducts);
+
+        DeliveryAddress deliveryAddress = DeliveryAddress.of(address);
+
         return Order.builder()
                 .user(user)
                 .store(store)
+                .address(deliveryAddress)
                 .orderedAt(clockHolder.nowDateTime())
                 .orderProducts(orderProducts)
                 .build();
+    }
+
+    private static void validateUserAndStore(User user, Store store) {
+        if (user == null) {
+            throw new OrderException("주문하는 사용자는 필수입니다.");
+        }
+        if (store == null) {
+            throw new OrderException("주문하는 가게는 필수입니다.");
+        }
     }
 
     private static void validate(List<OrderProduct> orderProducts) {

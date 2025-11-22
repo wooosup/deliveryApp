@@ -1,10 +1,14 @@
 package hello.delivery.order.infrastructure;
 
 import hello.delivery.common.infrastructure.BaseEntity;
+import hello.delivery.delivery.domain.DeliveryAddress;
 import hello.delivery.order.domain.Order;
 import hello.delivery.store.infrastructure.StoreEntity;
 import hello.delivery.user.infrastructure.UserEntity;
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -38,6 +42,10 @@ public class OrderEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private StoreEntity store;
 
+    @Embedded
+    @AttributeOverride(name = "address", column = @Column(name = "delivery_address"))
+    private DeliveryAddress address;
+
     private LocalDateTime orderedAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -49,6 +57,7 @@ public class OrderEntity extends BaseEntity {
         orderEntity.totalPrice = order.getTotalPrice();
         orderEntity.user = UserEntity.of(order.getUser());
         orderEntity.store = StoreEntity.of(order.getStore());
+        orderEntity.address = order.getAddress();
         orderEntity.orderedAt = order.getOrderedAt();
         List<OrderProductEntity> children = OrderProductEntity.of(order.getOrderProducts(), orderEntity);
         orderEntity.orderProducts.addAll(children);
@@ -60,6 +69,7 @@ public class OrderEntity extends BaseEntity {
                 .id(id)
                 .user(user.toDomain())
                 .store(store.toDomain())
+                .address(address)
                 .orderedAt(orderedAt)
                 .orderProducts(orderProducts.stream()
                         .map(OrderProductEntity::toDomain)
