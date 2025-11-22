@@ -16,12 +16,17 @@ public class OrderCreate {
     @NotEmpty(message = "주문 상품은 필수 입력 값입니다.")
     private final List<OrderProductRequest> orderProducts;
 
+    @NotBlank(message = "배달 주소는 필수 입력 값입니다.")
+    private final String address;
+
     @Builder
     private OrderCreate(
             @JsonProperty("storeName") String storeName,
-            @JsonProperty("orderProducts") List<OrderProductRequest> orderProducts) {
+            @JsonProperty("orderProducts") List<OrderProductRequest> orderProducts,
+            @JsonProperty("address") String address) {
         this.storeName = storeName;
         this.orderProducts = orderProducts;
+        this.address = address;
     }
 
 }
