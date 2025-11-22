@@ -1,7 +1,7 @@
 package hello.delivery.order.domain;
 
-import static hello.delivery.user.infrastructure.UserRole.CUSTOMER;
-import static hello.delivery.user.infrastructure.UserRole.OWNER;
+import static hello.delivery.user.domain.UserRole.CUSTOMER;
+import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

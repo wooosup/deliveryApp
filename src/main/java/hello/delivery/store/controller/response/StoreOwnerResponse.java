@@ -1,7 +1,7 @@
 package hello.delivery.store.controller.response;
 
 import hello.delivery.store.domain.Store;
-import hello.delivery.store.infrastructure.StoreType;
+import hello.delivery.store.domain.StoreType;
 import hello.delivery.user.controller.response.UserResponse;
 import java.util.List;
 import lombok.Builder;

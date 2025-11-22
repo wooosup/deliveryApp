@@ -1,7 +1,7 @@
 package hello.delivery.mock;
 
-import static hello.delivery.user.infrastructure.UserRole.CUSTOMER;
-import static hello.delivery.user.infrastructure.UserRole.OWNER;
+import static hello.delivery.user.domain.UserRole.CUSTOMER;
+import static hello.delivery.user.domain.UserRole.OWNER;
 
 import hello.delivery.user.domain.User;
 import hello.delivery.user.service.port.UserRepository;

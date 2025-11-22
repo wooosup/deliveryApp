@@ -3,6 +3,7 @@ package hello.delivery.store.infrastructure;
 import hello.delivery.common.infrastructure.BaseEntity;
 import hello.delivery.product.infrastructure.ProductEntity;
 import hello.delivery.store.domain.Store;
+import hello.delivery.store.domain.StoreType;
 import hello.delivery.user.infrastructure.UserEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

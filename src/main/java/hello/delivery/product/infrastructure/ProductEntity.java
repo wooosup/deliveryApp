@@ -2,6 +2,8 @@ package hello.delivery.product.infrastructure;
 
 import hello.delivery.common.infrastructure.BaseEntity;
 import hello.delivery.product.domain.Product;
+import hello.delivery.product.domain.ProductSellingStatus;
+import hello.delivery.product.domain.ProductType;
 import hello.delivery.store.infrastructure.StoreEntity;
 import hello.delivery.user.infrastructure.UserEntity;
 import jakarta.persistence.Entity;

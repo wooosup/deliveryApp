@@ -2,8 +2,8 @@ package hello.delivery.product.controller.port;
 
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
-import hello.delivery.product.infrastructure.ProductSellingStatus;
-import hello.delivery.product.infrastructure.ProductType;
+import hello.delivery.product.domain.ProductSellingStatus;
+import hello.delivery.product.domain.ProductType;
 import java.util.List;
 
 public interface ProductService {

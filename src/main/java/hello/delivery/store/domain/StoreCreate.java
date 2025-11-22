@@ -2,7 +2,6 @@ package hello.delivery.store.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import hello.delivery.product.domain.ProductCreate;
-import hello.delivery.store.infrastructure.StoreType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;

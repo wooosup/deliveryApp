@@ -1,8 +1,8 @@
 package hello.delivery.store.service.port;
 
-import static hello.delivery.store.infrastructure.StoreType.JAPANESE_FOOD;
-import static hello.delivery.store.infrastructure.StoreType.KOREAN_FOOD;
-import static hello.delivery.user.infrastructure.UserRole.OWNER;
+import static hello.delivery.store.domain.StoreType.JAPANESE_FOOD;
+import static hello.delivery.store.domain.StoreType.KOREAN_FOOD;
+import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import hello.delivery.mock.FakeStoreRepository;

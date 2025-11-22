@@ -1,8 +1,8 @@
 package hello.delivery.product.service.port;
 
-import static hello.delivery.product.infrastructure.ProductSellingStatus.STOP_SELLING;
-import static hello.delivery.product.infrastructure.ProductType.FOOD;
-import static hello.delivery.user.infrastructure.UserRole.OWNER;
+import static hello.delivery.product.domain.ProductSellingStatus.STOP_SELLING;
+import static hello.delivery.product.domain.ProductType.FOOD;
+import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import hello.delivery.mock.FakeProductRepository;

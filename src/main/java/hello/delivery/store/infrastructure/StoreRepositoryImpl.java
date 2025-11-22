@@ -1,6 +1,7 @@
 package hello.delivery.store.infrastructure;
 
 import hello.delivery.store.domain.Store;
+import hello.delivery.store.domain.StoreType;
 import hello.delivery.store.service.port.StoreRepository;
 import hello.delivery.user.domain.User;
 import hello.delivery.user.infrastructure.UserEntity;

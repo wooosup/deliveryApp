@@ -6,7 +6,7 @@ import hello.delivery.common.api.ApiResponse;
 import hello.delivery.product.controller.response.ProductResponse;
 import hello.delivery.product.domain.ProductCreate;
 import hello.delivery.product.domain.ProductStatusUpdate;
-import hello.delivery.product.infrastructure.ProductType;
+import hello.delivery.product.domain.ProductType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

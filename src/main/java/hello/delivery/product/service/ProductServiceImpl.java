@@ -1,14 +1,14 @@
 package hello.delivery.product.service;
 
-import static hello.delivery.product.infrastructure.ProductSellingStatus.SELLING;
+import static hello.delivery.product.domain.ProductSellingStatus.SELLING;
 
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.service.port.FinderPort;
 import hello.delivery.product.controller.port.ProductService;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
-import hello.delivery.product.infrastructure.ProductSellingStatus;
-import hello.delivery.product.infrastructure.ProductType;
+import hello.delivery.product.domain.ProductSellingStatus;
+import hello.delivery.product.domain.ProductType;
 import hello.delivery.product.service.port.ProductRepository;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;

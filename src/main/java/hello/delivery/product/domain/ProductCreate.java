@@ -1,7 +1,6 @@
 package hello.delivery.product.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import hello.delivery.product.infrastructure.ProductType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

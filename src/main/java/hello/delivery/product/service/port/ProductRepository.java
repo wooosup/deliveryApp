@@ -1,8 +1,8 @@
 package hello.delivery.product.service.port;
 
 import hello.delivery.product.domain.Product;
-import hello.delivery.product.infrastructure.ProductSellingStatus;
-import hello.delivery.product.infrastructure.ProductType;
+import hello.delivery.product.domain.ProductSellingStatus;
+import hello.delivery.product.domain.ProductType;
 import hello.delivery.store.domain.Store;
 import java.util.List;
 import java.util.Optional;

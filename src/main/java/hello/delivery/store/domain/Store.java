@@ -1,7 +1,6 @@
 package hello.delivery.store.domain;
 
 import hello.delivery.common.exception.StoreException;
-import hello.delivery.store.infrastructure.StoreType;
 import hello.delivery.user.domain.User;
 import java.time.LocalDate;
 import lombok.Builder;

@@ -1,5 +1,6 @@
 package hello.delivery.store.infrastructure;
 
+import hello.delivery.store.domain.StoreType;
 import hello.delivery.user.infrastructure.UserEntity;
 import java.time.LocalDate;
 import java.util.List;

@@ -2,7 +2,7 @@ package hello.delivery.store.controller.port;
 
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
-import hello.delivery.store.infrastructure.StoreType;
+import hello.delivery.store.domain.StoreType;
 import java.util.List;
 
 public interface StoreService {

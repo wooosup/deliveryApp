@@ -1,7 +1,6 @@
 package hello.delivery.user.domain;
 
 import hello.delivery.common.exception.UserException;
-import hello.delivery.user.infrastructure.UserRole;
 import lombok.Builder;
 import lombok.Getter;
 

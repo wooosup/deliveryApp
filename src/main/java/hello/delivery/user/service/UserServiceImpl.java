@@ -1,7 +1,7 @@
 package hello.delivery.user.service;
 
-import static hello.delivery.user.infrastructure.UserRole.CUSTOMER;
-import static hello.delivery.user.infrastructure.UserRole.OWNER;
+import static hello.delivery.user.domain.UserRole.CUSTOMER;
+import static hello.delivery.user.domain.UserRole.OWNER;
 
 import hello.delivery.common.exception.UserException;
 import hello.delivery.common.exception.UserNotFound;

@@ -2,8 +2,6 @@ package hello.delivery.product.domain;
 
 import hello.delivery.common.exception.ProductException;
 import hello.delivery.common.exception.StoreException;
-import hello.delivery.product.infrastructure.ProductSellingStatus;
-import hello.delivery.product.infrastructure.ProductType;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
 import lombok.Builder;

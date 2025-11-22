@@ -1,9 +1,9 @@
 package hello.delivery.store.service;
 
-import static hello.delivery.store.infrastructure.StoreType.JAPANESE_FOOD;
-import static hello.delivery.store.infrastructure.StoreType.KOREAN_FOOD;
-import static hello.delivery.user.infrastructure.UserRole.CUSTOMER;
-import static hello.delivery.user.infrastructure.UserRole.OWNER;
+import static hello.delivery.store.domain.StoreType.JAPANESE_FOOD;
+import static hello.delivery.store.domain.StoreType.KOREAN_FOOD;
+import static hello.delivery.user.domain.UserRole.CUSTOMER;
+import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -14,7 +14,7 @@ import hello.delivery.mock.TestClockHolder;
 import hello.delivery.store.controller.port.StoreService;
 import hello.delivery.store.domain.Store;
 import hello.delivery.store.domain.StoreCreate;
-import hello.delivery.store.infrastructure.StoreType;
+import hello.delivery.store.domain.StoreType;
 import hello.delivery.user.domain.User;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,7 +1,7 @@
 package hello.delivery.store.service.port;
 
 import hello.delivery.store.domain.Store;
-import hello.delivery.store.infrastructure.StoreType;
+import hello.delivery.store.domain.StoreType;
 import hello.delivery.user.domain.User;
 import java.time.LocalDate;
 import java.util.List;

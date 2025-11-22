@@ -1,9 +1,9 @@
 package hello.delivery.product.service;
 
-import static hello.delivery.product.infrastructure.ProductSellingStatus.STOP_SELLING;
-import static hello.delivery.product.infrastructure.ProductType.BEVERAGE;
-import static hello.delivery.product.infrastructure.ProductType.DESSERT;
-import static hello.delivery.user.infrastructure.UserRole.OWNER;
+import static hello.delivery.product.domain.ProductSellingStatus.STOP_SELLING;
+import static hello.delivery.product.domain.ProductType.BEVERAGE;
+import static hello.delivery.product.domain.ProductType.DESSERT;
+import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -15,7 +15,7 @@ import hello.delivery.mock.FakeProductRepository;
 import hello.delivery.product.controller.port.ProductService;
 import hello.delivery.product.domain.Product;
 import hello.delivery.product.domain.ProductCreate;
-import hello.delivery.product.infrastructure.ProductType;
+import hello.delivery.product.domain.ProductType;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
 import java.util.List;

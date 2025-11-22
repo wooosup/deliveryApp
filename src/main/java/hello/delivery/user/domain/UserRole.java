@@ -1,4 +1,4 @@
-package hello.delivery.user.infrastructure;
+package hello.delivery.user.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

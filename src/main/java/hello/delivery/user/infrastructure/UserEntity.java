@@ -1,6 +1,7 @@
 package hello.delivery.user.infrastructure;
 
 import hello.delivery.user.domain.User;
+import hello.delivery.user.domain.UserRole;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
