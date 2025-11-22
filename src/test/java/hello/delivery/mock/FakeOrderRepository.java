@@ -4,6 +4,7 @@ import hello.delivery.order.domain.Order;
 import hello.delivery.order.service.port.OrderRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class FakeOrderRepository implements OrderRepository {
@@ -18,6 +19,8 @@ public class FakeOrderRepository implements OrderRepository {
                     .id(autoIncrement.getAndIncrement())
                     .user(order.getUser())
                     .store(order.getStore())
+                    .address(order.getAddress())
+                    .orderedAt(order.getOrderedAt())
                     .orderProducts(order.getOrderProducts())
                     .build();
             data.add(newOrder);
@@ -27,6 +30,13 @@ public class FakeOrderRepository implements OrderRepository {
             data.add(order);
             return order;
         }
+    }
+
+    @Override
+    public Optional<Order> findById(Long id) {
+        return data.stream()
+                .filter(order -> order.getId().equals(id))
+                .findFirst();
     }
 
     @Override
