@@ -3,6 +3,7 @@ package hello.delivery.order.infrastructure;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.service.port.OrderRepository;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +16,11 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public Order save(Order order) {
         return orderJpaRepository.save(OrderEntity.of(order)).toDomain();
+    }
+
+    @Override
+    public Optional<Order> findById(Long id) {
+        return orderJpaRepository.findById(id).map(OrderEntity::toDomain);
     }
 
     @Override
