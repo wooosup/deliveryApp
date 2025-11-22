@@ -34,7 +34,7 @@ public class OrderResponse {
                 .id(order.getId())
                 .storeId(order.getStore().getId())
                 .totalPrice(order.getTotalPrice())
-                .address(order.getUser().getAddress())
+                .address(order.getAddress().getAddress())
                 .storeName(order.getStore().getName())
                 .orderedAt(order.getOrderedAt())
                 .orderProducts(order.getOrderProducts().stream()
