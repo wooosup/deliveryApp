@@ -3,7 +3,7 @@ package hello.delivery.common.controller;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
-import hello.delivery.common.exception.DeliveryException;
+import hello.delivery.common.exception.DeliveryAppException;
 import hello.delivery.common.exception.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +33,8 @@ public class ExceptionController {
         return response;
     }
 
-    @ExceptionHandler(DeliveryException.class)
-    public ResponseEntity<ErrorResponse> deliveryException(DeliveryException e) {
+    @ExceptionHandler(DeliveryAppException.class)
+    public ResponseEntity<ErrorResponse> deliveryException(DeliveryAppException e) {
         log.error("비즈니스 오류: {}", e.getMessage());
         ErrorResponse response = ErrorResponse.builder()
                 .code(String.valueOf(e.getStatus().value()))

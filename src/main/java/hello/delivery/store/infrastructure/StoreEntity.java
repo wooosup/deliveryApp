@@ -66,12 +66,6 @@ public class StoreEntity extends BaseEntity {
         this.lastSalesDate = lastSalesDate;
     }
 
-    public void updateSales(int dailySales, int totalSales, LocalDate lastSalesDate) {
-        this.dailySales = dailySales;
-        this.totalSales = totalSales;
-        this.lastSalesDate = lastSalesDate;
-    }
-
     public static StoreEntity of(Store store) {
         return StoreEntity.builder()
                 .id(store.getId())
