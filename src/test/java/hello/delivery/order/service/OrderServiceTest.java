@@ -4,6 +4,8 @@ import static hello.delivery.user.domain.UserRole.CUSTOMER;
 import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import hello.delivery.delivery.service.DeliveryServiceImpl;
+import hello.delivery.mock.FakeDeliveryRepository;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeOrderRepository;
 import hello.delivery.mock.FakeProductRepository;
@@ -27,9 +29,11 @@ class OrderServiceTest {
     private OrderService orderService;
     private FakeFinder fakeFinder;
     private FakeProductRepository fakeProductRepository;
+    private FakeDeliveryRepository fakeDeliveryRepository;
 
     private static final int PRODUCT_PRICE = 20000;
     private static final int ORDER_QUANTITY = 2;
+    private static final String ADDRESS = "대구시 달서구";
 
     private User customer;
     private Store store;
@@ -41,9 +45,18 @@ class OrderServiceTest {
         fakeFinder = new FakeFinder();
         fakeProductRepository = new FakeProductRepository();
         TestClockHolder testClockHolder = new TestClockHolder();
+        fakeDeliveryRepository = new FakeDeliveryRepository();
         StoreServiceImpl storeService = new StoreServiceImpl(new FakeStoreRepository(), fakeFinder, testClockHolder);
-        orderService = new OrderServiceImpl(fakeOrderRepository, fakeProductRepository, storeService, fakeFinder, testClockHolder);
+        DeliveryServiceImpl deliveryService = new DeliveryServiceImpl(fakeDeliveryRepository, fakeFinder, testClockHolder);
 
+        orderService = new OrderServiceImpl(
+                fakeOrderRepository,
+                fakeProductRepository,
+                storeService,
+                deliveryService,
+                fakeFinder,
+                testClockHolder
+        );
         setUpTestData();
     }
 
@@ -58,7 +71,7 @@ class OrderServiceTest {
     @DisplayName("주문을 생성할 수 있다.")
     void order() {
         // given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreate orderCreate = createOrderCreate(store, product);
 
         // when
         Order order = orderService.order(customer.getId(), orderCreate);
@@ -68,13 +81,15 @@ class OrderServiceTest {
         assertThat(order.getOrderProducts().get(0).getProduct().getName()).isEqualTo("치킨");
         assertThat(order.getOrderProducts().get(0).getQuantity()).isEqualTo(ORDER_QUANTITY);
         assertThat(order.getTotalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
+
+        assertThat(fakeDeliveryRepository.findByOrderId(order.getId())).isNotNull();
     }
 
     @Test
     @DisplayName("사용자 아이디로 주문 내역을 조회할 수 있다.")
     void findOrdersByUserId() {
         // given
-        OrderCreate orderCreate = createOrderCreate(store, product, ORDER_QUANTITY);
+        OrderCreate orderCreate = createOrderCreate(store, product);
         orderService.order(customer.getId(), orderCreate);
 
         // when
@@ -87,15 +102,16 @@ class OrderServiceTest {
         assertThat(result.get(0).getTotalPrice()).isEqualTo(PRODUCT_PRICE * ORDER_QUANTITY);
     }
 
-    private OrderCreate createOrderCreate(Store store, Product product, int quantity) {
+    private OrderCreate createOrderCreate(Store store, Product product) {
         OrderProductRequest orderProduct = OrderProductRequest.builder()
                 .productName(product.getName())
-                .quantity(quantity)
+                .quantity(ORDER_QUANTITY)
                 .build();
 
         return OrderCreate.builder()
                 .storeName(store.getName())
                 .orderProducts(List.of(orderProduct))
+                .address(ADDRESS)
                 .build();
     }
 
@@ -136,13 +152,12 @@ class OrderServiceTest {
     }
 
     private Product buildProduct(Store store) {
-        Product product = Product.builder()
+        Product savedProduct = fakeProductRepository.save(Product.builder()
                 .id(1L)
                 .name("치킨")
                 .price(PRODUCT_PRICE)
                 .store(store)
-                .build();
-        Product savedProduct = fakeProductRepository.save(product);
+                .build());
         fakeFinder.addProduct(savedProduct);
         return savedProduct;
     }
