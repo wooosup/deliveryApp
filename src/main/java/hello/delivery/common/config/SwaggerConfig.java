@@ -21,7 +21,9 @@ public class SwaggerConfig {
                         createTag("사용자 (user, owner)", "회원가입, 로그인, 정보 수정"),
                         createTag("가게", "가게 등록, 조회"),
                         createTag("상품", "상품 등록, 수정, 삭제"),
-                        createTag("주문", "주문 생성, 조회")
+                        createTag("주문", "주문 생성, 조회"),
+                        createTag("라이더", "라이더 회원가입, 로그인, 상태 변경"),
+                        createTag("배달", "배달 상태 변경, 배달 조회")
                 ));
     }
 
