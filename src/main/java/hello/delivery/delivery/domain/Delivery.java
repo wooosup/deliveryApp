@@ -13,17 +13,19 @@ import lombok.Getter;
 public class Delivery {
 
     private final Long id;
-    private final Order order;
+    private final Long orderId;
+    private final Long riderId;
     private final DeliveryStatus status;
     private final DeliveryAddress address;
     private final LocalDateTime startedAt;
     private final LocalDateTime completedAt;
 
     @Builder
-    private Delivery(Long id, Order order, DeliveryStatus status, DeliveryAddress address,
-                    LocalDateTime startedAt, LocalDateTime completedAt) {
+    private Delivery(Long id, Long orderId, Long riderId, DeliveryStatus status, DeliveryAddress address,
+                     LocalDateTime startedAt, LocalDateTime completedAt) {
         this.id = id;
-        this.order = order;
+        this.orderId = orderId;
+        this.riderId = riderId;
         this.status = status;
         this.address = address;
         this.startedAt = startedAt;
@@ -33,38 +35,60 @@ public class Delivery {
     public static Delivery create(Order order) {
         validate(order);
         return Delivery.builder()
-                .order(order)
+                .orderId(order.getId())
                 .status(PENDING)
                 .address(order.getAddress())
                 .build();
     }
 
-    public Delivery start(ClockHolder clockHolder) {
+    public Delivery assign(Long riderId) {
+        if (status != PENDING) {
+            throw new DeliveryException("배차 가능한 상태가 아닙니다.");
+        }
+        return Delivery.builder()
+                .id(id)
+                .orderId(orderId)
+                .riderId(riderId)
+                .status(ASSIGNED)
+                .address(address)
+                .build();
+    }
+
+    public Delivery start(Long riderId, ClockHolder clockHolder) {
+        validateRider(riderId);
         if (status != ASSIGNED) {
             throw new DeliveryException("배달을 시작할 수 없는 상태입니다.");
         }
         return Delivery.builder()
                 .id(id)
-                .order(order)
+                .orderId(orderId)
+                .riderId(riderId)
                 .status(PICKED_UP)
                 .address(address)
                 .startedAt(clockHolder.nowDateTime())
-                .completedAt(completedAt)
                 .build();
     }
 
-    public Delivery complete(ClockHolder clockHolder) {
+    public Delivery complete(Long riderId, ClockHolder clockHolder) {
+        validateRider(riderId);
         if (status != PICKED_UP) {
             throw new DeliveryException("배달을 완료할 수 없는 상태입니다.");
         }
         return Delivery.builder()
                 .id(id)
-                .order(order)
+                .orderId(orderId)
+                .riderId(riderId)
                 .status(DELIVERED)
                 .address(address)
                 .startedAt(startedAt)
                 .completedAt(clockHolder.nowDateTime())
                 .build();
+    }
+
+    private void validateRider(Long riderId) {
+        if (!this.riderId.equals(riderId)) {
+            throw new DeliveryException("해당 배달의 담당 라이더가 아닙니다.");
+        }
     }
 
     private static void validate(Order order) {
