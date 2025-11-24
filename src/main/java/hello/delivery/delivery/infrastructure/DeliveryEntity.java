@@ -36,6 +36,8 @@ public class DeliveryEntity extends BaseEntity {
     @JoinColumn(name = "order_id", nullable = false, unique = true)
     private OrderEntity order;
 
+    private Long riderId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DeliveryStatus status;
@@ -48,10 +50,11 @@ public class DeliveryEntity extends BaseEntity {
     private LocalDateTime completedAt;
 
     @Builder
-    private DeliveryEntity(Long id, OrderEntity order, DeliveryStatus status, DeliveryAddress address,
+    private DeliveryEntity(Long id, OrderEntity order, Long riderId, DeliveryStatus status, DeliveryAddress address,
                            LocalDateTime startedAt, LocalDateTime completedAt) {
         this.id = id;
         this.order = order;
+        this.riderId = riderId;
         this.status = status;
         this.address = address;
         this.startedAt = startedAt;
@@ -62,6 +65,7 @@ public class DeliveryEntity extends BaseEntity {
         return DeliveryEntity.builder()
                 .id(delivery.getId())
                 .order(orderEntity)
+                .riderId(delivery.getRiderId())
                 .status(delivery.getStatus())
                 .address(delivery.getAddress())
                 .startedAt(delivery.getStartedAt())
@@ -72,7 +76,8 @@ public class DeliveryEntity extends BaseEntity {
     public Delivery toDomain() {
         return Delivery.builder()
                 .id(id)
-                .order(order.toDomain())
+                .orderId(order.getId())
+                .riderId(riderId)
                 .status(status)
                 .address(address)
                 .startedAt(startedAt)

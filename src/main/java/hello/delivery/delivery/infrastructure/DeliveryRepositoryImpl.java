@@ -18,7 +18,7 @@ public class DeliveryRepositoryImpl implements DeliveryRepository {
 
     @Override
     public Delivery save(Delivery delivery) {
-        Long orderId = delivery.getOrder().getId();
+        Long orderId = delivery.getOrderId();
         OrderEntity orderEntity = orderJpaRepository.findById(orderId)
                 .orElseThrow(OrderNotFound::new);
 
