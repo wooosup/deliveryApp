@@ -1,5 +1,7 @@
 package hello.delivery.order.domain;
 
+import static hello.delivery.user.domain.UserRole.CUSTOMER;
+
 import hello.delivery.common.exception.OrderException;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.delivery.domain.DeliveryAddress;
@@ -52,6 +54,9 @@ public class Order {
     private static void validateUserAndStore(User user, Store store) {
         if (user == null) {
             throw new OrderException("주문하는 사용자는 필수입니다.");
+        }
+        if (user.getRole() != CUSTOMER) {
+            throw new OrderException("주문자는 고객이어야 합니다.");
         }
         if (store == null) {
             throw new OrderException("주문하는 가게는 필수입니다.");
