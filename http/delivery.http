@@ -1,8 +1,20 @@
-### 배달 시작
-POST localhost:8080/api/deliveries/start
+### 배차 완료
+PATCH localhost:8080/api/deliveries/1/assign
 Content-Type: application/json
 
-{
-  "orderId" : 1,
-  "driverName" : "없을무"
-}
+### 배달 시작
+PATCH localhost:8080/api/deliveries/1/start
+Content-Type: application/json
+
+### 배달 완료
+PATCH localhost:8080/api/deliveries/1/complete
+Content-Type: application/json
+
+### 배달 조회
+GET localhost:8080/api/deliveries/1
+Content-Type: application/json
+
+### 주문에 대한 배달 조회
+GET localhost:8080/api/deliveries/order/1
+Content-Type: application/json
+
