@@ -28,7 +28,7 @@ public class DeliveryResponse {
     public static DeliveryResponse of(Delivery delivery) {
         return DeliveryResponse.builder()
                 .deliveryId(delivery.getId())
-                .orderId(delivery.getOrder().getId())
+                .orderId(delivery.getOrderId())
                 .status(delivery.getStatus())
                 .address(delivery.getAddress().getAddress())
                 .startedAt(delivery.getStartedAt())
