@@ -9,6 +9,7 @@ import hello.delivery.mock.FakeDeliveryRepository;
 import hello.delivery.mock.FakeFinder;
 import hello.delivery.mock.FakeOrderRepository;
 import hello.delivery.mock.FakeProductRepository;
+import hello.delivery.mock.FakeRiderRepository;
 import hello.delivery.mock.FakeStoreRepository;
 import hello.delivery.mock.TestClockHolder;
 import hello.delivery.order.controller.port.OrderService;
@@ -46,8 +47,9 @@ class OrderServiceTest {
         fakeProductRepository = new FakeProductRepository();
         TestClockHolder testClockHolder = new TestClockHolder();
         fakeDeliveryRepository = new FakeDeliveryRepository();
+        FakeRiderRepository fakeRiderRepository = new FakeRiderRepository();
         StoreServiceImpl storeService = new StoreServiceImpl(new FakeStoreRepository(), fakeFinder, testClockHolder);
-        DeliveryServiceImpl deliveryService = new DeliveryServiceImpl(fakeDeliveryRepository, fakeFinder, testClockHolder);
+        DeliveryServiceImpl deliveryService = new DeliveryServiceImpl(fakeDeliveryRepository, fakeRiderRepository, fakeFinder, testClockHolder);
 
         orderService = new OrderServiceImpl(
                 fakeOrderRepository,
