@@ -11,6 +11,7 @@ import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.mock.TestClockHolder;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderProduct;
+import hello.delivery.rider.domain.Rider;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -23,13 +24,13 @@ class DeliveryTest {
     void create() throws Exception {
         // given
         DeliveryAddress address = createAddress();
-        Order order = createOrder(address);
+        Order order = buildOrder(address);
 
         // when
         Delivery delivery = Delivery.create(order);
 
         // then
-        assertThat(delivery.getOrder()).isEqualTo(order);
+        assertThat(delivery.getOrderId()).isEqualTo(order.getId());
         assertThat(delivery.getAddress()).isEqualTo(order.getAddress());
         assertThat(delivery.getStatus()).isEqualTo(PENDING);
     }
@@ -38,7 +39,7 @@ class DeliveryTest {
     @DisplayName("주소 없이 배달을 생성하면 예외를 던진다.")
     void validateCreate() throws Exception {
         // given
-        Order order = createOrder(null);
+        Order order = buildOrder(null);
 
         assertThatThrownBy(() -> Delivery.create(order))
                 .isInstanceOf(DeliveryException.class)
@@ -50,15 +51,18 @@ class DeliveryTest {
     void start() throws Exception {
         // given
         TestClockHolder testClockHolder = new TestClockHolder();
+        Order order = buildOrder(createAddress());
+        Rider rider = buildRider();
         Delivery delivery = Delivery.builder()
                 .address(createAddress())
-                .order(createOrder(createAddress()))
+                .orderId(order.getId())
+                .riderId(rider.getId())
                 .status(ASSIGNED)
                 .startedAt(null)
                 .build();
 
         // when
-        Delivery result = delivery.start(testClockHolder);
+        Delivery result = delivery.start(rider.getId(), testClockHolder);
 
         // then
         assertThat(result.getStatus()).isEqualTo(PICKED_UP);
@@ -71,14 +75,16 @@ class DeliveryTest {
     void validateStart() {
         // given
         TestClockHolder testClockHolder = new TestClockHolder();
+        Rider rider = buildRider();
         Delivery delivery = Delivery.builder()
                 .address(createAddress())
-                .order(createOrder(createAddress()))
+                .orderId(buildOrder(createAddress()).getId())
+                .riderId(rider.getId())
                 .status(PENDING)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> delivery.start(testClockHolder))
+        assertThatThrownBy(() -> delivery.start(rider.getId(), testClockHolder))
                 .isInstanceOf(DeliveryException.class)
                 .hasMessage("배달을 시작할 수 없는 상태입니다.");
     }
@@ -89,16 +95,18 @@ class DeliveryTest {
         // given
         LocalDateTime startTime = LocalDateTime.of(2025, 11, 23, 14, 30);
         TestClockHolder testClockHolder = new TestClockHolder();
+        Rider rider = buildRider();
 
         Delivery delivery = Delivery.builder()
                 .address(createAddress())
-                .order(createOrder(createAddress()))
+                .orderId(buildOrder(createAddress()).getId())
+                .riderId(rider.getId())
                 .status(PICKED_UP)
                 .startedAt(startTime)
                 .build();
 
         // when
-        Delivery completedDelivery = delivery.complete(testClockHolder);
+        Delivery completedDelivery = delivery.complete(rider.getId(), testClockHolder);
 
         // then
         assertThat(completedDelivery.getStatus()).isEqualTo(DELIVERED);
@@ -111,14 +119,16 @@ class DeliveryTest {
     void validateComplete() {
         // given
         TestClockHolder testClockHolder = new TestClockHolder();
+        Rider rider = buildRider();
         Delivery delivery = Delivery.builder()
                 .address(createAddress())
-                .order(createOrder(createAddress()))
+                .orderId(buildOrder(createAddress()).getId())
+                .riderId(rider.getId())
                 .status(ASSIGNED)
                 .build();
 
         // when & then
-        assertThatThrownBy(() -> delivery.complete(testClockHolder))
+        assertThatThrownBy(() -> delivery.complete(rider.getId(), testClockHolder))
                 .isInstanceOf(DeliveryException.class)
                 .hasMessage("배달을 완료할 수 없는 상태입니다.");
     }
@@ -127,17 +137,25 @@ class DeliveryTest {
         return DeliveryAddress.of("서울시 강남구");
     }
 
-    private OrderProduct createOrderProduct() {
+    private OrderProduct buildOrderProduct() {
         return OrderProduct.builder()
                 .id(1L)
                 .build();
     }
 
-    private Order createOrder(DeliveryAddress address) {
+    private Order buildOrder(DeliveryAddress address) {
         return Order.builder()
                 .id(1L)
                 .address(address)
-                .orderProducts(List.of(createOrderProduct()))
+                .orderProducts(List.of(buildOrderProduct()))
+                .build();
+    }
+
+    private Rider buildRider() {
+        return Rider.builder()
+                .id(1L)
+                .name("없을무")
+                .phone("010-1234-5678")
                 .build();
     }
 
