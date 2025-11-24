@@ -1,5 +1,7 @@
 package hello.delivery.delivery.service;
 
+import static hello.delivery.rider.domain.RiderStatus.*;
+
 import hello.delivery.common.exception.DeliveryException;
 import hello.delivery.common.service.port.ClockHolder;
 import hello.delivery.common.service.port.FinderPort;
@@ -7,6 +9,10 @@ import hello.delivery.delivery.controller.port.DeliveryService;
 import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.delivery.service.port.DeliveryRepository;
 import hello.delivery.order.domain.Order;
+import hello.delivery.rider.domain.Rider;
+import hello.delivery.rider.domain.RiderStatus;
+import hello.delivery.rider.domain.RiderStatusUpdate;
+import hello.delivery.rider.service.port.RiderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeliveryServiceImpl implements DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
+    private final RiderRepository riderRepository;
     private final FinderPort finderPort;
     private final ClockHolder clockHolder;
 
@@ -28,19 +35,40 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Transactional
-    public Delivery start(Long id) {
+    public Delivery assign(Long id, Long riderId) {
         Delivery delivery = finderPort.findByDelivery(id);
-        Delivery startedDelivery = delivery.start(clockHolder);
+        Rider rider = finderPort.findByRider(riderId);
 
-        return deliveryRepository.save(startedDelivery);
+        rider.validateAvailable();
+
+        delivery = delivery.assign(rider.getId());
+        return deliveryRepository.save(delivery);
     }
 
     @Transactional
-    public Delivery complete(Long id) {
+    public Delivery start(Long id, Long riderId) {
         Delivery delivery = finderPort.findByDelivery(id);
-        Delivery completedDelivery = delivery.complete(clockHolder);
+        Rider rider = finderPort.findByRider(riderId);
 
-        return deliveryRepository.save(completedDelivery);
+        rider.validateCanStartDelivery();
+
+        changeRiderStatus(rider, DELIVERING);
+
+        delivery = delivery.start(rider.getId(), clockHolder);
+        return deliveryRepository.save(delivery);
+    }
+
+    @Transactional
+    public Delivery complete(Long id, Long riderId) {
+        Delivery delivery = finderPort.findByDelivery(id);
+        Rider rider = finderPort.findByRider(riderId);
+
+        rider.validateCanCompleteDelivery();
+
+        changeRiderStatus(rider, AVAILABLE);
+
+        delivery = delivery.complete(rider.getId(), clockHolder);
+        return deliveryRepository.save(delivery);
     }
 
     @Override
@@ -52,6 +80,12 @@ public class DeliveryServiceImpl implements DeliveryService {
     public Delivery findByOrderId(Long id) {
         return deliveryRepository.findByOrderId(id)
                 .orElseThrow(() -> new DeliveryException("해당 주문의 배달 정보를 찾을 수 없습니다."));
+    }
+
+    private void changeRiderStatus(Rider rider, RiderStatus newStatus) {
+        riderRepository.save(rider.changeStatus(RiderStatusUpdate.builder()
+                .status(newStatus)
+                .build()));
     }
 
 }

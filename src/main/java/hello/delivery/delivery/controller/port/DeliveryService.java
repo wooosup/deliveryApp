@@ -7,9 +7,11 @@ public interface DeliveryService {
 
     void createDeliveryForOrder(Order order);
 
-    Delivery start(Long id);
+    Delivery assign(Long id, Long riderId);
 
-    Delivery complete(Long id);
+    Delivery start(Long id, Long riderId);
+
+    Delivery complete(Long id, Long riderId);
 
     Delivery findById(Long id);
 
