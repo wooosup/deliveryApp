@@ -4,6 +4,8 @@ import static hello.delivery.delivery.domain.DeliveryStatus.ASSIGNED;
 import static hello.delivery.delivery.domain.DeliveryStatus.DELIVERED;
 import static hello.delivery.delivery.domain.DeliveryStatus.PENDING;
 import static hello.delivery.delivery.domain.DeliveryStatus.PICKED_UP;
+import static hello.delivery.rider.domain.RiderStatus.AVAILABLE;
+import static hello.delivery.rider.domain.RiderStatus.DELIVERING;
 import static hello.delivery.user.domain.UserRole.CUSTOMER;
 import static hello.delivery.user.domain.UserRole.OWNER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,10 +17,13 @@ import hello.delivery.delivery.domain.Delivery;
 import hello.delivery.delivery.domain.DeliveryAddress;
 import hello.delivery.mock.FakeDeliveryRepository;
 import hello.delivery.mock.FakeFinder;
+import hello.delivery.mock.FakeRiderRepository;
 import hello.delivery.mock.TestClockHolder;
 import hello.delivery.order.domain.Order;
 import hello.delivery.order.domain.OrderProduct;
 import hello.delivery.product.domain.Product;
+import hello.delivery.rider.domain.Rider;
+import hello.delivery.rider.domain.RiderStatus;
 import hello.delivery.store.domain.Store;
 import hello.delivery.user.domain.User;
 import java.time.LocalDateTime;
@@ -37,10 +42,12 @@ class DeliveryServiceImplTest {
     @BeforeEach
     void setUp() {
         fakeDeliveryRepository = new FakeDeliveryRepository();
+        FakeRiderRepository fakeRiderRepository = new FakeRiderRepository();
         fakeFinder = new FakeFinder();
         testClockHolder = new TestClockHolder();
         deliveryService = new DeliveryServiceImpl(
                 fakeDeliveryRepository,
+                fakeRiderRepository,
                 fakeFinder,
                 testClockHolder
         );
@@ -66,26 +73,53 @@ class DeliveryServiceImplTest {
         // then
         Delivery delivery = fakeDeliveryRepository.findByOrderId(order.getId()).orElseThrow();
         assertThat(delivery).isNotNull();
-        assertThat(delivery.getOrder()).isEqualTo(order);
+        assertThat(delivery.getOrderId()).isEqualTo(order.getId());
         assertThat(delivery.getStatus()).isEqualTo(PENDING);
         assertThat(delivery.getAddress().getAddress()).isEqualTo("대구시 달서구");
     }
+
+    @Test
+    @DisplayName("배달을 라이더에게 할당하면 ASSIGNED 상태가 된다.")
+    void assign() throws Exception {
+        // given
+        Order order = setUpOrder();
+        Rider rider = buildRider(AVAILABLE);
+
+        Delivery delivery = Delivery.builder()
+                .id(1L)
+                .orderId(order.getId())
+                .riderId(rider.getId())
+                .address(DeliveryAddress.of("대구시 달서구"))
+                .status(PENDING)
+                .build();
+        fakeFinder.addDelivery(delivery);
+
+        // when
+        Delivery result = deliveryService.assign(delivery.getId(), rider.getId());
+
+        // then
+        assertThat(result.getStatus()).isEqualTo(ASSIGNED);
+    }
+
 
     @Test
     @DisplayName("배달을 시작하면 PICKED_UP 상태가 되고 시작 시간이 기록된다.")
     void start() {
         // given
         Order order = setUpOrder();
+        Rider rider = buildRider(AVAILABLE);
+
         Delivery delivery = Delivery.builder()
                 .id(1L)
-                .order(order)
+                .orderId(order.getId())
+                .riderId(rider.getId())
                 .address(DeliveryAddress.of("대구시 달서구"))
                 .status(ASSIGNED)
                 .build();
         fakeFinder.addDelivery(delivery);
 
         // when
-        Delivery result = deliveryService.start(delivery.getId());
+        Delivery result = deliveryService.start(delivery.getId(), rider.getId());
 
         // then
         assertThat(result.getStatus()).isEqualTo(PICKED_UP);
@@ -98,10 +132,12 @@ class DeliveryServiceImplTest {
         // given
         LocalDateTime startTime = testClockHolder.nowDateTime().minusMinutes(30);
         Order order = setUpOrder();
+        Rider rider = buildRider(DELIVERING);
 
         Delivery delivery = Delivery.builder()
                 .id(1L)
-                .order(order)
+                .orderId(order.getId())
+                .riderId(rider.getId())
                 .address(DeliveryAddress.of("대구시 달서구"))
                 .status(PICKED_UP)
                 .startedAt(startTime)
@@ -109,7 +145,7 @@ class DeliveryServiceImplTest {
         fakeFinder.addDelivery(delivery);
 
         // when
-        Delivery result = deliveryService.complete(delivery.getId());
+        Delivery result = deliveryService.complete(delivery.getId(), rider.getId());
 
         // then
         assertThat(result.getStatus()).isEqualTo(DELIVERED);
@@ -124,7 +160,7 @@ class DeliveryServiceImplTest {
 
         Delivery delivery = Delivery.builder()
                 .id(1L)
-                .order(order)
+                .orderId(order.getId())
                 .address(DeliveryAddress.of("대구시 달서구"))
                 .status(PENDING)
                 .build();
@@ -136,7 +172,7 @@ class DeliveryServiceImplTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(delivery.getId());
-        assertThat(result.getOrder()).isEqualTo(order);
+        assertThat(result.getOrderId()).isEqualTo(order.getId());
     }
 
     @Test
@@ -146,7 +182,7 @@ class DeliveryServiceImplTest {
         Order order = setUpOrder();
         Delivery delivery = Delivery.builder()
                 .id(1L)
-                .order(order)
+                .orderId(order.getId())
                 .address(DeliveryAddress.of("대구시 달서구"))
                 .status(PENDING)
                 .build();
@@ -158,7 +194,7 @@ class DeliveryServiceImplTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getOrder().getId()).isEqualTo(order.getId());
+        assertThat(result.getOrderId()).isEqualTo(order.getId());
     }
 
     @Test
@@ -232,4 +268,16 @@ class DeliveryServiceImplTest {
                 .orderProducts(List.of(orderProduct))
                 .build();
     }
+
+    private Rider buildRider(RiderStatus status) {
+        Rider rider = Rider.builder()
+                .id(1L)
+                .name("없을무")
+                .phone("010-1234-5678")
+                .status(status)
+                .build();
+        fakeFinder.addRider(rider);
+        return rider;
+    }
+
 }
