@@ -21,29 +21,36 @@ public class DeliveryController implements DeliveryControllerDocs {
     private final DeliveryService deliveryService;
 
     @Override
+    @PatchMapping("/{deliveryId}/assign")
+    public ApiResponse<DeliveryResponse> assign(@LoginUser Long riderId, @PathVariable Long deliveryId) {
+        Delivery delivery = deliveryService.assign(deliveryId, riderId);
+        return ApiResponse.ok(DeliveryResponse.of(delivery));
+    }
+
+    @Override
     @PatchMapping("/{deliveryId}/start")
-    public ApiResponse<DeliveryResponse> start(@LoginUser Long userId, @PathVariable Long deliveryId) {
-        Delivery delivery = deliveryService.start(deliveryId);
+    public ApiResponse<DeliveryResponse> start(@LoginUser Long riderId, @PathVariable Long deliveryId) {
+        Delivery delivery = deliveryService.start(deliveryId, riderId);
         return ApiResponse.ok(DeliveryResponse.of(delivery));
     }
 
     @Override
     @PatchMapping("/{deliveryId}/complete")
-    public ApiResponse<DeliveryResponse> complete(@LoginUser Long userId, @PathVariable Long deliveryId) {
-        Delivery delivery = deliveryService.complete(deliveryId);
+    public ApiResponse<DeliveryResponse> complete(@LoginUser Long riderId, @PathVariable Long deliveryId) {
+        Delivery delivery = deliveryService.complete(deliveryId, riderId);
         return ApiResponse.ok(DeliveryResponse.of(delivery));
     }
 
     @Override
     @GetMapping("/{deliveryId}")
-    public ApiResponse<DeliveryResponse> getDeliveryById(Long userId, @PathVariable Long deliveryId) {
+    public ApiResponse<DeliveryResponse> getDeliveryById(Long riderId, @PathVariable Long deliveryId) {
         Delivery delivery = deliveryService.findById(deliveryId);
         return ApiResponse.ok(DeliveryResponse.of(delivery));
     }
 
     @Override
     @GetMapping("/order/{deliveryId}")
-    public ApiResponse<DeliveryResponse> getOrderForDelivery(Long userId, @PathVariable Long deliveryId) {
+    public ApiResponse<DeliveryResponse> getOrderForDelivery(Long riderId, @PathVariable Long deliveryId) {
         Delivery delivery = deliveryService.findByOrderId(deliveryId);
         return ApiResponse.ok(DeliveryResponse.of(delivery));
     }
