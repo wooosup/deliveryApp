@@ -25,16 +25,32 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) {
+
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         if (request == null) {
             throw new UnauthorizedException("잘못된 요청입니다.");
         }
+
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("userId") == null) {
+        if (session == null) {
             throw new UnauthorizedException("로그인을 해주세요.");
         }
 
-        return session.getAttribute("userId");
+        Long riderId = (Long) session.getAttribute("riderId");
+        Long userId = (Long) session.getAttribute("userId");
+
+        return getSessionUserId(riderId, userId);
     }
+
+    private static long getSessionUserId(Long riderId, Long userId) {
+        if (riderId != null) {
+            return riderId;
+        }
+        if (userId != null) {
+            return userId;
+        }
+        throw new UnauthorizedException("로그인을 해주세요.");
+    }
+
 }
